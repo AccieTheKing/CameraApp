@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-
+import Camera from './components/Camera';
 /**
  * This class represents the homepage, this is the page that will be show on startup
  * of the application
@@ -11,8 +11,6 @@ export default class Home extends React.Component {
     this.state = {
       showHome: true,
     };
-
-    let pageArray = [];
   }
 
   render() {
@@ -36,7 +34,7 @@ export default class Home extends React.Component {
     } else {
       return (
         <View>
-          <Text>HEEEEEEEEEEEEYYYY, brother</Text>
+          <Camera />
           <Button title="Open Camera" onPress={() => this.setState({ showHome: true })} />
         </View>
       );
