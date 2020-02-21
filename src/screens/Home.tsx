@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import Camera from './components/Camera';
+
 /**
  * This class represents the homepage, this is the page that will be show on startup
  * of the application
@@ -15,7 +16,8 @@ export default class Home extends React.Component {
 
   render() {
     let view = null;
-    if (!this.state.showHome) {
+    // show camera page or the home page
+    if (this.state.showHome) {
       view = (
         <View>
           <Header />
