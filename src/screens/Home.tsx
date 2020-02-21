@@ -14,17 +14,17 @@ export default class Home extends React.Component {
   }
 
   render() {
+    let view = null;
     if (this.state.showHome) {
-      return (
-        <View style={styles.overallPage}>
+      view = (
+        <View>
           <Header />
           <Main>
             <Text style={styles.mainIntroText}>Welcome, here are some buttons that need some actions</Text>
             <View style={styles.buttonContainer}>
               <View style={styles.bottonRow}>
                 <Button title="Open Camera" onPress={() => this.setState({ showHome: false })} />
-                <Button title="Go to another page" onPress={() => console.log('t')} />
-                <Button title="Just a test" onPress={() => console.log('t')} />
+                <Button title="Just a test" onPress={() => console.log('Well hello there!')} />
               </View>
             </View>
           </Main>
@@ -32,13 +32,15 @@ export default class Home extends React.Component {
         </View>
       );
     } else {
-      return (
+      view = (
         <View>
           <Camera />
-          <Button title="Open Camera" onPress={() => this.setState({ showHome: true })} />
+          <Button title="Return to homescreen" onPress={() => this.setState({ showHome: true })} />
         </View>
       );
     }
+
+    return view;
   }
 }
 
@@ -78,9 +80,6 @@ const Footer = () => {
 };
 
 const styles = StyleSheet.create({
-  overallPage: {
-    flex: 1,
-  },
   header: {
     backgroundColor: 'red',
     padding: 15,
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
     justifyContent: 'space-between',
-    maxHeight: 150,
+    maxHeight: 100,
   },
   footer: {
     backgroundColor: 'red',
@@ -115,5 +114,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFF',
     textAlign: 'center',
+  },
+  cameraPage: {
+    flex: 1,
+    backgroundColor: 'red',
   },
 });
