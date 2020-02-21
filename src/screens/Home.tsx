@@ -15,7 +15,7 @@ export default class Home extends React.Component {
 
   render() {
     let view = null;
-    if (this.state.showHome) {
+    if (!this.state.showHome) {
       view = (
         <View>
           <Header />
@@ -24,7 +24,8 @@ export default class Home extends React.Component {
             <View style={styles.buttonContainer}>
               <View style={styles.bottonRow}>
                 <Button title="Open Camera" onPress={() => this.setState({ showHome: false })} />
-                <Button title="Just a test" onPress={() => console.log('Well hello there!')} />
+                {/* <Button title="Go to another page" onPress={() => console.log('t')} /> */}
+                <Button title="Just a test" onPress={() => console.log('Well hello everyone')} />
               </View>
             </View>
           </Main>
@@ -33,7 +34,7 @@ export default class Home extends React.Component {
       );
     } else {
       view = (
-        <View>
+        <View style={{ flex: 1, alignSelf: 'stretch' }}>
           <Camera />
           <Button title="Return to homescreen" onPress={() => this.setState({ showHome: true })} />
         </View>
