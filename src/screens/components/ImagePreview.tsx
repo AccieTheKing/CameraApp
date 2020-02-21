@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   },
   previewImage: {
     flex: 1,
+    resizeMode: 'stretch',
   },
   actionBtnRow: {
     padding: 15,

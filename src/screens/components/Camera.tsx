@@ -46,6 +46,9 @@ export default class Camera extends PureComponent {
     }
   }
 
+  /**
+   * This function will take a picture when the snapp button has been pressed
+   */
   takePicture = async () => {
     if (this.camera) {
       const options = { quality: 0.5, base64: true, fixOrientation: true };
@@ -58,6 +61,9 @@ export default class Camera extends PureComponent {
     }
   };
 
+  /**
+   * This function will toggle the use of the front or the back camera
+   */
   toggleCamera() {
     if (this.state.cameraAngle === 'back') {
       this.setState({ cameraAngle: 'front' });
@@ -66,8 +72,12 @@ export default class Camera extends PureComponent {
     }
   }
 
+  /**
+   * This function will let other components be able to change the state of the homepage
+   *
+   * @param go - boolean
+   */
   showHome(go) {
-    console.log('testing', go);
     this.setState({ showPreview: go });
   }
 }
