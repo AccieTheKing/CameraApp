@@ -9,6 +9,7 @@ export default class Camera extends PureComponent {
     this.state = {
       data: null,
       showPreview: false,
+      cameraAngle: 'back',
     };
   }
 
@@ -21,7 +22,7 @@ export default class Camera extends PureComponent {
               this.camera = ref;
             }}
             style={styles.preview}
-            type={RNCamera.Constants.Type.back}
+            type={RNCamera.Constants.Type[this.state.cameraAngle]}
             flashMode={RNCamera.Constants.FlashMode.off}
             captureAudio={false}
           />
@@ -34,8 +35,8 @@ export default class Camera extends PureComponent {
       );
     } else {
       return (
-        <View>
-          <Image src={this.state.data} style={styles.previewImage} />
+        <View style={styles.container}>
+          <Image source={{ uri: this.state.data }} style={styles.previewImage} />
         </View>
       );
     }
@@ -78,6 +79,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   snapBtnSection: {
-    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 });
