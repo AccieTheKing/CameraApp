@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
-import Axios from 'axios';
 
 const ImagePreview = ({ src, goToHome }) => {
   return (
@@ -18,10 +17,33 @@ const ImagePreview = ({ src, goToHome }) => {
   );
 };
 
+/**
+ * This method saves taken picture into the database
+ *
+ * @param src - the image datasource
+ */
 const savePicture = async (src) => {
-  const response = await fetch('http://192.168.1.67:3000/photos', { method: 'GET' }).then((res) => res.json());
-  console.log(response);
+  const response = await fetch('http://192.168.1.67:3000/photos', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: src,
+    }),
+  }).then((res) => res.json());
+  console.log('heyyy', response);
 };
+
+/**
+ * This method fetches the data from the database
+ */
+const fetchPicture = async () => {
+  const response = await fetch('http://192.168.1.67:3000/photos', { method: 'GET' }).then((res) => res.json());
+  console.log('heyyy', response);
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
