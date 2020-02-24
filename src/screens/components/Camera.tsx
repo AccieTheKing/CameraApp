@@ -16,7 +16,7 @@ export default class Camera extends PureComponent {
   }
 
   render() {
-    if (!this.state.showPreview) {
+    if (this.state.showPreview) {
       return (
         <View style={styles.container}>
           <RNCamera

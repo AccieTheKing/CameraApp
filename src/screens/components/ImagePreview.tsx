@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import Axios from 'axios';
 
 const ImagePreview = ({ src, goToHome }) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: src }} style={styles.previewImage} />
       <View style={styles.actionBtnRow}>
-        <TouchableOpacity style={styles.actionBtn}>
+        <TouchableOpacity style={styles.actionBtn} onPress={() => savePicture(src)}>
           <Text style={styles.actionBtnText}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionBtn} onPress={() => goToHome(false)}>
@@ -17,6 +18,10 @@ const ImagePreview = ({ src, goToHome }) => {
   );
 };
 
+const savePicture = async (src) => {
+  const response = await fetch('http://192.168.1.67:3000/photos', { method: 'GET' }).then((res) => res.json());
+  console.log(response);
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
