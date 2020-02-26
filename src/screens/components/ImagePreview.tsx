@@ -25,7 +25,7 @@ const ImagePreview = ({ src, goToHome }) => {
  */
 const savePicture = async (src) => {
   const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read file as base64
-  const response = await fetch('http://192.168.43.126:3000/photos', {
+  const response = await fetch('http://192.168.1.81:3000/photos', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
