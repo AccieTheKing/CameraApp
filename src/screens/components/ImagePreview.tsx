@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const ImagePreview = ({ src, goToHome }) => {
   return (
@@ -23,24 +24,26 @@ const ImagePreview = ({ src, goToHome }) => {
  * @param src - the image datasource
  */
 const savePicture = async (src) => {
-  const response = await fetch('http://192.168.1.67:3000/photos', {
+  const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read file as base64
+  const response = await fetch('http://192.168.43.126:3000/photos', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      name: src,
+      name: base64,
     }),
   }).then((res) => res.json());
-  console.log('heyyy', response);
+
+  console.log('heyyy', base64);
 };
 
 /**
  * This method fetches the data from the database
  */
 const fetchPicture = async () => {
-  const response = await fetch('http://192.168.1.67:3000/photos', { method: 'GET' }).then((res) => res.json());
+  const response = await fetch('http://localhost:3000/photos', { method: 'GET' }).then((res) => res.json());
   console.log('heyyy', response);
 };
 

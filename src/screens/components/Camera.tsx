@@ -16,7 +16,7 @@ export default class Camera extends PureComponent {
   }
 
   render() {
-    if (this.state.showPreview) {
+    if (!this.state.showPreview) {
       return (
         <View style={styles.container}>
           <RNCamera
@@ -51,7 +51,7 @@ export default class Camera extends PureComponent {
    */
   takePicture = async () => {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true, fixOrientation: true };
+      const options = { quality: 0.5, fixOrientation: true };
       const data = await this.camera.takePictureAsync(options).catch((err) => {
         console.log('error taking picture ' + err);
       });
