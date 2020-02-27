@@ -24,8 +24,8 @@ const ImagePreview = ({ src, goToHome }) => {
  * @param src - the image datasource
  */
 const savePicture = async (src) => {
-  const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read file as base64
-  const response = await fetch('http://192.168.43.126:3000/photos', {
+  const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read file from cache location as base64
+  const postedData = await fetch('http://192.168.43.126:3000/photos', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -34,17 +34,23 @@ const savePicture = async (src) => {
     body: JSON.stringify({
       name: base64,
     }),
-  }).then((res) => res.json());
-
-  console.log('heyyy', base64);
+  })
+    .then((res) => {
+      console.log('successfuly sent image');
+      return res.json();
+    })
+    .catch((err) => console.log('An error has been found  ', err));
 };
 
 /**
  * This method fetches the data from the database
  */
 const fetchPicture = async () => {
-  const response = await fetch('http://localhost:3000/photos', { method: 'GET' }).then((res) => res.json());
-  console.log('heyyy', response);
+  const fetchedImage = await fetch('http://192.168.43.126:3000/photos') // fetch all images
+    .then((res) => res.json())
+    .catch((err) => console.log('err ', err));
+  const base64PhotoString = fetchedImage[1].name; // encoded base64 string
+  this.setState({ data: `data:image/png;base64,${base64PhotoString}`, showPreview: true });
 };
 
 const styles = StyleSheet.create({
