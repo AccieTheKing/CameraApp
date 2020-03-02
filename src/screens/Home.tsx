@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import Camera from './components/Camera';
+import Gallery from './Gallery';
 
 /**
  * This class represents the homepage, this is the page that will be show on startup
@@ -10,37 +11,49 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showHome: true,
+      currentPage: 'Home',
     };
   }
 
   render() {
     let view = null;
-    // show camera page or the home page
-    if (this.state.showHome) {
-      view = (
-        <View>
-          <Header />
-          <Main>
-            <Text style={styles.mainIntroText}>Welcome, here are some buttons that need some actions</Text>
-            <View style={styles.buttonContainer}>
-              <View style={styles.bottonRow}>
-                <Button title="Open Camera" onPress={() => this.setState({ showHome: false })} />
-                {/* <Button title="Go to another page" onPress={() => console.log('t')} /> */}
-                <Button title="Just a test" onPress={() => console.log('Well hello everyone')} />
+    switch (this.state.currentPage) {
+      case 'Home':
+        view = (
+          <View>
+            <Header />
+            <Main>
+              <Text style={styles.mainIntroText}>Welcome, here are some buttons that need some actions</Text>
+              <View style={styles.buttonContainer}>
+                <View style={styles.bottonRow}>
+                  <Button title="Open Camera" onPress={() => this.setState({ currentPage: 'Camera' })} />
+                  <Button title="View images stored" onPress={() => this.setState({ currentPage: 'Gallery' })} />
+                  <Button title="Just a test" onPress={() => console.log('Well hello everyone')} />
+                </View>
               </View>
-            </View>
-          </Main>
-          <Footer />
-        </View>
-      );
-    } else {
-      view = (
-        <View style={{ flex: 1, alignSelf: 'stretch' }}>
-          <Camera />
-          <Button title="Return to homescreen" onPress={() => this.setState({ showHome: true })} />
-        </View>
-      );
+            </Main>
+            <Footer />
+          </View>
+        );
+        break;
+      case 'Camera':
+        view = (
+          <View style={{ flex: 1, alignSelf: 'stretch' }}>
+            <Camera />
+            <Button title="Return to homescreen" onPress={() => this.setState({ currentPage: 'Home' })} />
+          </View>
+        );
+        break;
+      case 'Gallery':
+        view = (
+          <View style={{ flex: 1, alignSelf: 'stretch' }}>
+            <Gallery />
+            <Button title="Return to homescreen" onPress={() => this.setState({ currentPage: 'Home' })} />
+          </View>
+        );
+        break;
+      default:
+        break;
     }
 
     return view;
@@ -107,7 +120,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
     justifyContent: 'space-between',
-    maxHeight: 100,
+    maxHeight: 150,
   },
   footer: {
     backgroundColor: 'red',
