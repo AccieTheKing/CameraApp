@@ -1,7 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import { postPhotoAPI } from '../../imagesEndPoints/index';
 import RNFetchBlob from 'rn-fetch-blob';
 
+/**
+ * This is the view is shown after a picture is taken
+ */
 const ImagePreview = ({ src, goToHome }) => {
   return (
     <View style={styles.container}>
@@ -24,27 +28,15 @@ const ImagePreview = ({ src, goToHome }) => {
  * @param src - the image datasource
  */
 const savePicture = async (src) => {
-  const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read file as base64
-  const response = await fetch('http://192.168.1.81:3000/photos', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: base64,
-    }),
-  }).then((res) => res.json());
-
-  console.log('heyyy', base64);
-};
-
-/**
- * This method fetches the data from the database
- */
-const fetchPicture = async () => {
-  const response = await fetch('http://localhost:3000/photos', { method: 'GET' }).then((res) => res.json());
-  console.log('heyyy', response);
+  const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read file from cache location as base64
+  const body = JSON.stringify({
+    name: base64,
+  });
+  postPhotoAPI(body)
+    .then((res) => {
+      console.log('successfuly sent image');
+    })
+    .catch((err) => console.log('An error has been found  ', err));
 };
 
 const styles = StyleSheet.create({

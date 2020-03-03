@@ -1,13 +1,13 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property } from '@loopback/repository';
 
 @model()
 export class Photo extends Entity {
   @property({
     type: 'number',
     id: true,
-    generated: false,
+    generated: true,
   })
-  id?: number;
+  id: number;
 
   @property({
     type: 'string',
