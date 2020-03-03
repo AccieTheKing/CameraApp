@@ -7,13 +7,16 @@ import { StyleSheet, View, Image } from 'react-native';
  *
  */
 const GalleryImage = ({ src }) => {
-  return (
-    <View>
-      <Image source={src} />
-    </View>
-  );
+  return <Image style={styles.imageStyle} source={{ uri: `data:image/png;base64,${src}` }} />;
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  imageStyle: {
+    flex: 1,
+    flexDirection: 'column',
+    resizeMode: 'cover',
+    minHeight: 200,
+  },
+});
 
 export default GalleryImage;

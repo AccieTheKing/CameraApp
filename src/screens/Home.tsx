@@ -27,7 +27,7 @@ export default class Home extends React.Component {
               <View style={styles.buttonContainer}>
                 <View style={styles.bottonRow}>
                   <Button title="Open Camera" onPress={() => this.setState({ currentPage: 'Camera' })} />
-                  <Button title="View images stored" onPress={() => this.setState({ currentPage: 'Gallery' })} />
+                  <Button title="Open Gallery" onPress={() => this.setState({ currentPage: 'Gallery' })} />
                   <Button title="Just a test" onPress={() => console.log('Well hello everyone')} />
                 </View>
               </View>
