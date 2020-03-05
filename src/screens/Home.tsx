@@ -3,136 +3,21 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import Camera from './components/Camera';
 import Gallery from './Gallery';
 
-/**
- * This class represents the homepage, this is the page that will be show on startup
- * of the application
- */
-export default class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentPage: 'Home',
-    };
-  }
-
-  render() {
-    let view = null;
-    switch (this.state.currentPage) {
-      case 'Home':
-        view = (
-          <View>
-            <Header />
-            <Main>
-              <Text style={styles.mainIntroText}>Welcome, here are some buttons that need some actions</Text>
-              <View style={styles.buttonContainer}>
-                <View style={styles.bottonRow}>
-                  <Button title="Open Camera" onPress={() => this.setState({ currentPage: 'Camera' })} />
-                  <Button title="Open Gallery" onPress={() => this.setState({ currentPage: 'Gallery' })} />
-                  <Button title="Just a test" onPress={() => console.log('Well hello everyone')} />
-                </View>
-              </View>
-            </Main>
-            <Footer />
-          </View>
-        );
-        break;
-      case 'Camera':
-        view = (
-          <View style={{ flex: 1, alignSelf: 'stretch' }}>
-            <Camera />
-            <Button title="Return to homescreen" onPress={() => this.setState({ currentPage: 'Home' })} />
-          </View>
-        );
-        break;
-      case 'Gallery':
-        view = (
-          <View style={{ flex: 1, alignSelf: 'stretch' }}>
-            <Gallery />
-            <Button title="Return to homescreen" onPress={() => this.setState({ currentPage: 'Home' })} />
-          </View>
-        );
-        break;
-      default:
-        break;
-    }
-
-    return view;
-  }
-}
-
-/**
- * The header of the Home screen
- *
- * @param props
- */
-const Header = () => {
+const Home = ({ navigation }) => {
   return (
-    <View style={styles.header}>
-      <Text style={styles.headerText}>Home</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button color="red" title="Camera" onPress={() => navigation.navigate('Camera')} />
+      <Button title="Gallery" onPress={() => navigation.navigate('Gallery')} />
+      <Button title="Test" onPress={() => navigation.navigate('Test')} />
     </View>
   );
 };
 
-/**
- * The main of the home screen
- *
- * @param props
- */
-const Main = (props) => {
-  return <View style={styles.main}>{props.children}</View>;
-};
-
-/**
- * The footer of the home screen
- *
- * @param props
- */
-const Footer = () => {
-  return (
-    <View style={styles.footer}>
-      <Text style={styles.footerText}>Made with ❤ and some struggle</Text>
-    </View>
-  );
-};
+export default Home;
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: 'red',
-    padding: 15,
-  },
-  headerText: {
-    fontSize: 25,
-    color: 'white',
-    textAlign: 'center',
-  },
-  main: {
+  btn: {
     flex: 1,
-    padding: 15,
-  },
-  mainIntroText: {
-    fontSize: 20,
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  bottonRow: {
-    flex: 1,
-    alignSelf: 'center',
-    justifyContent: 'space-between',
-    maxHeight: 150,
-  },
-  footer: {
-    backgroundColor: 'red',
-    padding: 10,
-  },
-  footerText: {
-    fontSize: 18,
-    color: '#FFF',
-    textAlign: 'center',
-  },
-  cameraPage: {
-    flex: 1,
-    backgroundColor: 'red',
+    color: 'red',
   },
 });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import GalleryImage from './components/GalleryImage';
-import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import { getPhotosAPI } from '../imagesEndPoints/index';
 
 const Gallery = () => {
@@ -9,9 +9,6 @@ const Gallery = () => {
 
   return (
     <View style={styles.galleryPage}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Gallery</Text>
-      </View>
       <FlatList
         data={cachedImages}
         renderItem={({ item }) => <GalleryImage src={item.name} />}

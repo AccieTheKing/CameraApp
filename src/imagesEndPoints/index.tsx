@@ -1,4 +1,4 @@
-const ipAddress = '192.168.1.67';
+const ipAddress = '192.168.1.81';
 
 /**
  * This function fetches all the photos from the backend
