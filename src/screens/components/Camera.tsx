@@ -30,13 +30,13 @@ export default class Camera extends PureComponent {
           />
           <View style={styles.snapBtnSection}>
             <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
-              <Text style={{ fontSize: 14 }}> SNAP </Text>
+              <Text style={{ fontSize: 14, color: 'white' }}> SNAP </Text>
             </TouchableOpacity>
             {/* {/* <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
               <Text style={{ fontSize: 14 }}> SNAP </Text>
             </TouchableOpacity> */}
             <TouchableOpacity onPress={this.toggleCamera.bind(this)} style={styles.capture}>
-              <Text style={{ fontSize: 14 }}> TOGGLE </Text>
+              <Text style={{ fontSize: 14, color: 'white' }}> TOGGLE </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   capture: {
-    backgroundColor: '#fff',
+    backgroundColor: '#71b4da',
     borderRadius: 100,
     padding: 15,
     margin: 20,

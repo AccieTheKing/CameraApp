@@ -2,20 +2,21 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import AwesomeButtonRed from 'react-native-really-awesome-button/src/themes/red.js';
 import AwesomeButtonC137 from 'react-native-really-awesome-button/src/themes/c137.js';
+import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
 const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.contain}>
-        <AwesomeButtonRed width={80} type="anchor" onPress={() => navigation.navigate('Camera')}>
+        <AwesomeButtonRick width={200} type="primary" onPress={() => navigation.navigate('Camera')}>
           <Text style={styles.txt}> Camera </Text>
-        </AwesomeButtonRed>
-        <AwesomeButtonC137 width={80} type="anchor" onPress={() => navigation.navigate('Gallery')}>
+        </AwesomeButtonRick>
+        <AwesomeButtonRick width={200} type="primary" onPress={() => navigation.navigate('Gallery')}>
           <Text style={styles.txt}>Gallery</Text>
-        </AwesomeButtonC137>
-        <AwesomeButtonRed width={80} onPress={() => navigation.navigate('Test')}>
+        </AwesomeButtonRick>
+        <AwesomeButtonRick width={200} type="primary" onPress={() => navigation.navigate('Test')}>
           <Text style={styles.txt}> Test </Text>
-        </AwesomeButtonRed>
+        </AwesomeButtonRick>
       </View>
     </View>
   );
@@ -35,5 +36,6 @@ const styles = StyleSheet.create({
   },
   txt: {
     color: 'white',
+    fontSize: 30,
   },
 });
