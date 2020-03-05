@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import GalleryImage from './components/GalleryImage';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
-import { getPhotosAPI } from '../imagesEndPoints/index';
+import { getPhotosAPI } from '../endPoints/images/index';
 
 const Gallery = () => {
   const [cachedImages, setCachedImages] = useState();

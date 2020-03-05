@@ -1,8 +1,13 @@
 import { BackendApplication } from './application';
 import { ApplicationConfig } from '@loopback/core';
-import http from 'http';
 import express, { Request, Response } from 'express';
+import http from 'http';
 import path from 'path';
+import pEvent from 'p-event';
+
+// Virgil SDK
+import { virgilJwt } from './api/virgilJwt';
+import { authenticate } from './api/authenticate';
 
 /**
  * This class will serve as a express server
@@ -16,15 +21,16 @@ export class ExpressServer {
     this.app = express(); // define express server
     this.lbApp = new BackendApplication(); // initialize loopback app
 
+    // register loopback app on /api route
     this.app.use('/api', this.lbApp.requestHandler);
 
-    // custom express routes
-    this.app.get('/', function (req: Request, res: Response) {
+    //CUSTOM EXPRESS ROUTES
+    this.app.get('/', function (_req: Request, res: Response) {
       res.sendFile(path.resolve('public/express.html'));
     });
-    this.app.get('/hello', function (req: Request, res: Response) {
-      res.send('Hello world!');
-    });
+
+    this.app.get('/virgil-jwt', virgilJwt); // generate token for user
+    // this.app.post('/authenticate', authenticate); //
   }
 
   async boot() {
@@ -34,8 +40,9 @@ export class ExpressServer {
   public async start() {
     await this.lbApp.start();
     const port = this.lbApp.restServer.config.port || 3000;
-    const host = this.lbApp.restServer.config.host ?? '127.0.0.1';
+    const host = this.lbApp.restServer.config.host ?? 'localhost';
     this.server = this.app.listen(port, host);
+    await pEvent(this.server, 'listening');
   }
 
   public async stop() {

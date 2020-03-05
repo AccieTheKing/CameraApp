@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
-import { postPhotoAPI } from '../../imagesEndPoints/index';
+import { postPhotoAPI } from '../../endPoints/images/index';
 import RNFetchBlob from 'rn-fetch-blob';
 
 /**
