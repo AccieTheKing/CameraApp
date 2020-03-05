@@ -1,5 +1,4 @@
 const application = require('./dist');
-
 module.exports = application;
 
 if (require.main === module) {
@@ -7,7 +6,7 @@ if (require.main === module) {
   const config = {
     rest: {
       port: +(process.env.PORT || 3000),
-      host: process.env.HOST,
+      host: process.env.HOST || 'localhost',
       // The `gracePeriodForClose` provides a graceful close for http/https
       // servers with keep-alive clients. The default value is `Infinity`
       // (don't force-close). If you want to immediately destroy all sockets
@@ -18,6 +17,8 @@ if (require.main === module) {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
       },
+      // Use the LB4 application as a route. It should not be listening.
+      listenOnStart: false,
     },
   };
   application.main(config).catch(err => {
