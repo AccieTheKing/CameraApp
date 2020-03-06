@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Button } from 'react-native';
+// navigation
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// screens
+import { Authentication, LoadingScreen } from './src/screens/Authentication';
 import Home from './src/screens/Home';
 import Camera from './src/screens/components/Camera';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Gallery from './src/screens/Gallery';
 
 // Virgil SDK
@@ -36,21 +39,44 @@ import Gallery from './src/screens/Gallery';
 // };
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSignout, setIsSignout] = useState(false);
+  const [userToken, setUserToken] = useState(null);
+
+  // show loading animation if token is not available
+  if (isLoading) {
+    // return <LoadingScreen />;
+  }
+
   const Stack = createStackNavigator();
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        // initialRouteName="Authentication"
         screenOptions={{
           headerStyle: { backgroundColor: '#aad3ea' },
           headerTintColor: 'white',
           headerTitleStyle: { fontSize: 25 },
         }}
       >
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Camera" component={Camera} />
-        <Stack.Screen name="Gallery" component={Gallery} />
-        <Stack.Screen name="Test" component={test} />
+        {/* {userToken === null ? ( */}
+        {/* // if user token is null, then the user must sign in again */}
+        <Stack.Screen
+          name="Authentication"
+          component={Authentication}
+          options={{
+            headerShown: false,
+            animationTypeForReplace: isSignout ? 'pop' : 'push',
+          }}
+        />
+        {/* ) : ( */}
+        <React.Fragment>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Camera" component={Camera} />
+          <Stack.Screen name="Gallery" component={Gallery} />
+          <Stack.Screen name="Test" component={test} />
+        </React.Fragment>
+        {/* )} */}
       </Stack.Navigator>
     </NavigationContainer>
   );

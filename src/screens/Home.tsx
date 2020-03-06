@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   contain: {
-    alignSelf: 'auto',
+    flex: 1,
+    maxHeight: 250,
     justifyContent: 'space-around',
   },
   txt: {

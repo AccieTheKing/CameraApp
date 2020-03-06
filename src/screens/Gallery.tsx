@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import GalleryImage from './components/GalleryImage';
 import { StyleSheet, View, FlatList } from 'react-native';
+import GalleryImage from './components/GalleryImage';
 import { getPhotosAPI } from '../endPoints/images/index';
 
 const Gallery = () => {

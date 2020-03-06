@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import ImagePreview from './ImagePreview';
+import ImagePreview from '../ImagePreview';
 
 export default class Camera extends PureComponent {
   constructor(props) {
@@ -32,9 +32,6 @@ export default class Camera extends PureComponent {
             <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
               <Text style={{ fontSize: 14, color: 'white' }}> SNAP </Text>
             </TouchableOpacity>
-            {/* {/* <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
-              <Text style={{ fontSize: 14 }}> SNAP </Text>
-            </TouchableOpacity> */}
             <TouchableOpacity onPress={this.toggleCamera.bind(this)} style={styles.capture}>
               <Text style={{ fontSize: 14, color: 'white' }}> TOGGLE </Text>
             </TouchableOpacity>
