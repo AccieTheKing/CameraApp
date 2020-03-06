@@ -14,12 +14,12 @@ import { authenticate } from './api/authenticate';
  */
 export class ExpressServer {
   private app: express.Application;
-  private lbApp: BackendApplication;
+  public readonly lbApp: BackendApplication;
   private server?: http.Server;
 
   constructor(options: ApplicationConfig = {}) {
     this.app = express(); // define express server
-    this.lbApp = new BackendApplication(); // initialize loopback app
+    this.lbApp = new BackendApplication(options); // initialize loopback app
 
     // register loopback app on /api route
     this.app.use('/api', this.lbApp.requestHandler);
