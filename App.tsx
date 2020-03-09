@@ -5,7 +5,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // screens
-import { Authentication, LoadingScreen } from './src/screens/Authentication';
+import { Launch, LoadingScreen } from './src/screens/Launch';
+import SignIn from './src/screens/SignIn';
 import Home from './src/screens/Home';
 import Camera from './src/screens/components/Camera';
 import Gallery from './src/screens/Gallery';
@@ -61,14 +62,17 @@ const App = () => {
       >
         {/* {userToken === null ? ( */}
         {/* // if user token is null, then the user must sign in again */}
-        <Stack.Screen
-          name="Authentication"
-          component={Authentication}
-          options={{
-            headerShown: false,
-            animationTypeForReplace: isSignout ? 'pop' : 'push',
-          }}
-        />
+        <React.Fragment>
+          <Stack.Screen
+            name="Launch"
+            component={Launch}
+            options={{
+              headerShown: false,
+              animationTypeForReplace: isSignout ? 'pop' : 'push',
+            }}
+          />
+          <Stack.Screen name="SignIn" component={SignIn} />
+        </React.Fragment>
         {/* ) : ( */}
         <React.Fragment>
           <Stack.Screen name="Home" component={Home} />

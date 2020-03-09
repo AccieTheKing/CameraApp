@@ -5,7 +5,7 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
 /**
  * Main screen for Authentication
  */
-const Authentication = ({ navigation }) => {
+const Launch = ({ navigation }) => {
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
       <View style={styles.applicationRow}>
@@ -20,7 +20,7 @@ const Authentication = ({ navigation }) => {
             width={200}
             style={styles.loginBtn}
             type="primary"
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('SignIn')}
           >
             <Text style={styles.loginBtnText}>Login</Text>
           </AwesomeButtonRick>
@@ -43,16 +43,6 @@ const Authentication = ({ navigation }) => {
  * Shows loading screen when restoring the user token.
  */
 const LoadingScreen = () => {};
-
-/**
- * The first screen if user is not authenticated
- */
-const SignInScreen = () => {};
-
-/**
- * The view after the user is authenticated
- */
-const HomeScreen = () => {};
 
 const styles = StyleSheet.create({
   applicationContainer: {
@@ -98,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { Authentication, LoadingScreen };
+export { Launch, LoadingScreen };

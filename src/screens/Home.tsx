@@ -4,6 +4,11 @@ import AwesomeButtonRed from 'react-native-really-awesome-button/src/themes/red.
 import AwesomeButtonC137 from 'react-native-really-awesome-button/src/themes/c137.js';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
+/**
+ * This is the view after a user has been signed in
+ *
+ * @param navigation - for navigating to another view in the stack navigation
+ */
 const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
