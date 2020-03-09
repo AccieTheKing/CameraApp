@@ -31,7 +31,7 @@ const SignIn = ({ navigation }) => {
           width={200}
           style={styles.loginBtn}
           type="primary"
-          onPress={() => alert('Login', 'You pressed the login button')}
+          onPress={() => navigation.navigate('Home')}
         >
           <Text style={styles.loginBtnText}>Sign Up</Text>
         </AwesomeButtonRick>
