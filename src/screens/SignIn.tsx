@@ -1,11 +1,35 @@
-import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, ImageBackground, TextInput, Platform } from 'react-native';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
+import AsyncStorage from '@react-native-community/async-storage';
+
+const getUsername = async () => {
+  let username;
+  try {
+    AsyncStorage.getAllKeys().then((res) => console.log(res));
+    username = await AsyncStorage.getItem('cameraAppUsername');
+  } catch (err) {
+    console.log(err);
+  }
+
+  return username;
+};
+
+const storeUsername = async (username) => {
+  try {
+    await AsyncStorage.setItem('cameraAppUsername', username);
+  } catch (err) {
+    console.log('Something went wrong', err);
+  }
+};
 
 /**
  *
  */
-const SignIn = ({ navigation }) => {
+const SignIn = ({ navigation, name }) => {
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
       <View style={styles.headerRow}>
@@ -18,11 +42,21 @@ const SignIn = ({ navigation }) => {
         <View style={styles.signInFieldsContainer}>
           <View>
             <Text style={styles.signInInputTitle}>Username</Text>
-            <TextInput placeholder="Username" style={styles.inputFieldStyle} />
+            <TextInput
+              placeholder="Username"
+              value={username}
+              onChangeText={(text) => setUsername(text)}
+              style={styles.inputFieldStyle}
+            />
           </View>
           <View>
             <Text style={styles.signInInputTitle}>Password</Text>
-            <TextInput placeholder="password" style={styles.inputFieldStyle} />
+            <TextInput
+              placeholder="password"
+              secureTextEntry={true}
+              style={styles.inputFieldStyle}
+              onChangeText={(password) => setPassword(password)}
+            />
           </View>
         </View>
       </View>
@@ -31,16 +65,29 @@ const SignIn = ({ navigation }) => {
           width={200}
           style={styles.loginBtn}
           type="primary"
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => authenticateUser(navigation, { username, password })}
         >
-          <Text style={styles.loginBtnText}>Sign Up</Text>
+          <Text style={styles.loginBtnText}>Sign In</Text>
         </AwesomeButtonRick>
       </View>
     </ImageBackground>
   );
 };
 
-const signIn = () => {};
+/**
+ * This method will check the credentials of the user and if the user has an authentication token that is st
+ *
+ * @param navigation - to navigate to another view
+ */
+const authenticateUser = async (navigation, { username, password }) => {
+  console.log(`User with username: ${username} and password: ${password}`);
+  // fetch(`firebase-login-url`).then(res => res.json()).then(data => data{
+  // })
+
+  storeUsername(username).then(() => {
+    navigation.navigate('Home');
+  });
+};
 
 const styles = StyleSheet.create({
   applicationContainer: {

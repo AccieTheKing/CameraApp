@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 // navigation
 import { NavigationContainer } from '@react-navigation/native';
@@ -12,7 +12,7 @@ import Camera from './src/screens/components/Camera';
 import Gallery from './src/screens/Gallery';
 
 // Virgil SDK
-// import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 // import { EThree } from '@virgilsecurity/e3kit-native';
 // import { ipAddress } from './src/endPoints/index';
 
@@ -39,29 +39,52 @@ import Gallery from './src/screens/Gallery';
 //   return EThree.initialize(getToken, { AsyncStorage });
 // };
 
+/**
+ * This method will get the username from storage
+ */
+const getUsername = async () => {
+  const username = await AsyncStorage.getItem('cameraAppUsername');
+  return username;
+};
+
+/**
+ * This method will store the username into the storage on the device, after firebase confirms the user
+ *
+ * @param username - the username that is going to be stored
+ */
+const storeUsername = async (username) => {
+  const storedUsername = await AsyncStorage.setItem('cameraAppUsername', username).catch((err) => {
+    console.log('Something went wrong with storing the username ', err);
+  });
+  return storedUsername;
+};
+
+const test = async () => {
+  AsyncStorage.getAllKeys().then((res) => console.log(res));
+  const usernameTest = await AsyncStorage.getItem('cameraAppUsername');
+  console.log('username van de App component', usernameTest);
+};
+
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignout, setIsSignout] = useState(false);
   const [userToken, setUserToken] = useState(null);
 
-  // show loading animation if token is not available
-  if (isLoading) {
-    // return <LoadingScreen />;
-  }
+  // test async storage with username
+  const [username, setUsername] = useState(null);
 
   const Stack = createStackNavigator();
   return (
     <NavigationContainer>
       <Stack.Navigator
-        // initialRouteName="Authentication"
+        initialRouteName="Launch"
         screenOptions={{
           headerStyle: { backgroundColor: '#aad3ea' },
           headerTintColor: 'white',
           headerTitleStyle: { fontSize: 25 },
         }}
       >
-        {/* {userToken === null ? ( */}
-        {/* // if user token is null, then the user must sign in again */}
+        {/* {username === null ? ( */}
         <React.Fragment>
           <Stack.Screen
             name="Launch"
@@ -75,10 +98,16 @@ const App = () => {
         </React.Fragment>
         {/* ) : ( */}
         <React.Fragment>
-          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerShown: true,
+            }}
+          />
           <Stack.Screen name="Camera" component={Camera} />
           <Stack.Screen name="Gallery" component={Gallery} />
-          <Stack.Screen name="Test" component={test} />
+          <Stack.Screen name="Test" component={Test} />
         </React.Fragment>
         {/* )} */}
       </Stack.Navigator>
@@ -86,7 +115,8 @@ const App = () => {
   );
 };
 
-function test({ navigation }) {
+function Test({ navigation, test }) {
+  console.log(test);
   return (
     <View>
       <Text>Hallo dit is een test</Text>

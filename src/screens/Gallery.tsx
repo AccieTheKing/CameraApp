@@ -5,7 +5,14 @@ import { getPhotosAPI } from '../endPoints/images/index';
 
 const Gallery = () => {
   const [cachedImages, setCachedImages] = useState();
-  initImages(setCachedImages);
+
+  useState(() => {
+    initImages(setCachedImages); // component will update/mount
+    // component will unmount
+    return () => {
+      setCachedImages(null);
+    };
+  });
 
   return (
     <View style={styles.galleryPage}>

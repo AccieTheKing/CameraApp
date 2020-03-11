@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import AwesomeButtonRed from 'react-native-really-awesome-button/src/themes/red.js';
 import AwesomeButtonC137 from 'react-native-really-awesome-button/src/themes/c137.js';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
+import AsyncStorage from '@react-native-community/async-storage';
 
 /**
  * This is the view after a user has been signed in
