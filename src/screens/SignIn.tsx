@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
-import { storeUsername, getStoredUsername } from '../appLib/systemStorage/username';
+import { storeUsername, getStoredUsername, clearUserFromStorage } from '../appLib/systemStorage/username';
 import auth from '@react-native-firebase/auth';
 
 /**
@@ -14,14 +14,22 @@ const SignIn = ({ navigation }) => {
 
   useEffect(() => {
     getStoredUsername().then((data) => {
-      setUsername(data);
-      setCachedUser(true);
+      if (data) {
+        setUsername(data);
+        setCachedUser(true);
+      } else {
+        setCachedUser(false);
+      }
     });
 
     return () => {
       setCachedUser(false);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(cachedUser);
+  });
 
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
@@ -65,7 +73,29 @@ const SignIn = ({ navigation }) => {
         </View>
       ) : (
         <View style={styles.mainRow}>
-          <Text>Sign in with user {username}</Text>
+          <View style={styles.mainRow}>
+            <Text>Sign in with user {username}</Text>
+          </View>
+          <View style={styles.mainRow}>
+            <Fragment>
+              <AwesomeButtonRick
+                width={200}
+                style={styles.loginBtn}
+                type="primary"
+                onPress={() => authenticateUser(username, password)}
+              >
+                <Text style={styles.loginBtnText}>Yes</Text>
+              </AwesomeButtonRick>
+              <AwesomeButtonRick
+                width={200}
+                style={styles.loginBtn}
+                type="primary"
+                onPress={() => cancelAutoLogin(setCachedUser)}
+              >
+                <Text style={styles.loginBtnText}>Cancel</Text>
+              </AwesomeButtonRick>
+            </Fragment>
+          </View>
         </View>
       )}
     </ImageBackground>
@@ -90,6 +120,16 @@ const authenticateUser = async (username, password) => {
   } else {
     Alert.alert(`Ohhh?`, 'You forgot to fill in some fields');
   }
+};
+
+/**
+ * This method will cancel the login and removes the stored username
+ * from system memory
+ *
+ * @param setCachedUser -
+ */
+const cancelAutoLogin = (setCachedUser) => {
+  clearUserFromStorage().then(() => setCachedUser(false));
 };
 
 /**
