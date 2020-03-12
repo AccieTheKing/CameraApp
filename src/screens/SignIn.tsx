@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput } from 'react-native';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
@@ -6,6 +6,9 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
  *
  */
 const SignIn = ({ navigation }) => {
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
       <View style={styles.headerRow}>
@@ -18,11 +21,19 @@ const SignIn = ({ navigation }) => {
         <View style={styles.signInFieldsContainer}>
           <View>
             <Text style={styles.signInInputTitle}>Username</Text>
-            <TextInput placeholder="Username" style={styles.inputFieldStyle} />
+            <TextInput
+              placeholder="Username"
+              style={styles.inputFieldStyle}
+              onChangeText={(username) => setUsername(username)}
+            />
           </View>
           <View>
             <Text style={styles.signInInputTitle}>Password</Text>
-            <TextInput placeholder="password" style={styles.inputFieldStyle} />
+            <TextInput
+              placeholder="password"
+              style={styles.inputFieldStyle}
+              onChangeText={(password) => setPassword(password)}
+            />
           </View>
         </View>
       </View>
@@ -31,16 +42,18 @@ const SignIn = ({ navigation }) => {
           width={200}
           style={styles.loginBtn}
           type="primary"
-          onPress={() => alert('Login', 'You pressed the login button')}
+          onPress={() => authenticateUser(username, password)}
         >
-          <Text style={styles.loginBtnText}>Sign Up</Text>
+          <Text style={styles.loginBtnText}>Sign In</Text>
         </AwesomeButtonRick>
       </View>
     </ImageBackground>
   );
 };
 
-const signIn = () => {};
+const authenticateUser = (username, password) => {
+  console.log(`username: ${username} || password: ${password}`);
+};
 
 const styles = StyleSheet.create({
   applicationContainer: {
