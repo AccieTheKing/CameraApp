@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput } from 'react-native';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
+import auth from '@react-native-firebase/auth';
 
 /**
  *
@@ -33,6 +34,7 @@ const SignIn = ({ navigation }) => {
               placeholder="password"
               style={styles.inputFieldStyle}
               onChangeText={(password) => setPassword(password)}
+              secureTextEntry={true}
             />
           </View>
         </View>
@@ -51,8 +53,12 @@ const SignIn = ({ navigation }) => {
   );
 };
 
-const authenticateUser = (username, password) => {
+const authenticateUser = async (username, password) => {
   console.log(`username: ${username} || password: ${password}`);
+  try {
+    const user = await auth().signInWithEmailAndPassword(username, password);
+    console.log(user.user);
+  } catch (err) {}
 };
 
 const styles = StyleSheet.create({
