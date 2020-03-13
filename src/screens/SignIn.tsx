@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ImageBackground, TextInput, Platform } from 'react-native';
+import React, { useState, useEffect, Fragment } from 'react';
+import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
-import AsyncStorage from '@react-native-community/async-storage';
+import { storeUsername, getStoredUsername, clearUserFromStorage } from '../appLib/systemStorage/username';
+import auth from '@react-native-firebase/auth';
 
 const getUsername = async () => {
   let username;
@@ -24,11 +25,31 @@ const storeUsername = async (username) => {
 };
 
 /**
- *
+ * This is the SignIn component where the user can signin into the application
  */
-const SignIn = ({ navigation, name }) => {
+const SignIn = ({ navigation }) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
+  const [cachedUser, setCachedUser] = useState(false); // user already logged in before
+
+  useEffect(() => {
+    getStoredUsername().then((data) => {
+      if (data) {
+        setUsername(data);
+        setCachedUser(true);
+      } else {
+        setCachedUser(false);
+      }
+    });
+
+    return () => {
+      setCachedUser(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(cachedUser);
+  });
 
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
@@ -38,55 +59,110 @@ const SignIn = ({ navigation, name }) => {
           <Text style={styles.applicationSubTitle}>CameraApp</Text>
         </View>
       </View>
-      <View style={styles.mainRow}>
-        <View style={styles.signInFieldsContainer}>
-          <View>
-            <Text style={styles.signInInputTitle}>Username</Text>
-            <TextInput
-              placeholder="Username"
-              value={username}
-              onChangeText={(text) => setUsername(text)}
-              style={styles.inputFieldStyle}
-            />
+      {cachedUser === false ? (
+        <View style={styles.mainRow}>
+          <View style={styles.signInFieldsContainer}>
+            <View>
+              <Text style={styles.signInInputTitle}>Username</Text>
+              <TextInput
+                placeholder="Username"
+                style={styles.inputFieldStyle}
+                onChangeText={(username) => setUsername(username)}
+              />
+            </View>
+            <View>
+              <Text style={styles.signInInputTitle}>Password</Text>
+              <TextInput
+                placeholder="password"
+                style={styles.inputFieldStyle}
+                onChangeText={(password) => setPassword(password)}
+                secureTextEntry={true}
+              />
+            </View>
           </View>
-          <View>
-            <Text style={styles.signInInputTitle}>Password</Text>
-            <TextInput
-              placeholder="password"
-              secureTextEntry={true}
-              style={styles.inputFieldStyle}
-              onChangeText={(password) => setPassword(password)}
-            />
+          <View style={styles.mainRow}>
+            <AwesomeButtonRick
+              width={200}
+              style={styles.loginBtn}
+              type="primary"
+              onPress={() => authenticateUser(username, password)}
+            >
+              <Text style={styles.loginBtnText}>Sign In</Text>
+            </AwesomeButtonRick>
           </View>
         </View>
-      </View>
-      <View style={styles.mainRow}>
-        <AwesomeButtonRick
-          width={200}
-          style={styles.loginBtn}
-          type="primary"
-          onPress={() => authenticateUser(navigation, { username, password })}
-        >
-          <Text style={styles.loginBtnText}>Sign In</Text>
-        </AwesomeButtonRick>
-      </View>
+      ) : (
+        <View style={styles.mainRow}>
+          <View style={styles.mainRow}>
+            <Text>Sign in with user {username}</Text>
+          </View>
+          <View style={styles.mainRow}>
+            <Fragment>
+              <AwesomeButtonRick
+                width={200}
+                style={styles.loginBtn}
+                type="primary"
+                onPress={() => authenticateUser(username, password)}
+              >
+                <Text style={styles.loginBtnText}>Yes</Text>
+              </AwesomeButtonRick>
+              <AwesomeButtonRick
+                width={200}
+                style={styles.loginBtn}
+                type="primary"
+                onPress={() => cancelAutoLogin(setCachedUser)}
+              >
+                <Text style={styles.loginBtnText}>Cancel</Text>
+              </AwesomeButtonRick>
+            </Fragment>
+          </View>
+        </View>
+      )}
     </ImageBackground>
   );
 };
 
 /**
- * This method will check the credentials of the user and if the user has an authentication token that is st
+ * This method will authenticate the user and provides the user with some
+ * messages if fields are blank or the credentials are wrong
  *
- * @param navigation - to navigate to another view
+ * @param username - email address of the user
+ * @param password -  password of the user
  */
-const authenticateUser = async (navigation, { username, password }) => {
-  console.log(`User with username: ${username} and password: ${password}`);
-  // fetch(`firebase-login-url`).then(res => res.json()).then(data => data{
-  // })
+const authenticateUser = async (username, password) => {
+  if (textInputValidation(username) && textInputValidation(password)) {
+    try {
+      const data = await auth().signInWithEmailAndPassword(username, password);
+      storeUsername(data.user.email);
+    } catch (err) {
+      Alert.alert('Wrong credentials', `${err}`);
+    }
+  } else {
+    Alert.alert(`Ohhh?`, 'You forgot to fill in some fields');
+  }
+};
 
-  storeUsername(username).then(() => {
-    navigation.navigate('Home');
-  });
+/**
+ * This method will cancel the login and removes the stored username
+ * from system memory
+ *
+ * @param setCachedUser -
+ */
+const cancelAutoLogin = (setCachedUser) => {
+  clearUserFromStorage().then(() => setCachedUser(false));
+};
+
+/**
+ * This method will check if a textfield is not blank
+ * and returns true or false
+ *
+ * @param text - field to check if empty
+ */
+const textInputValidation = (text: string) => {
+  if (text && text.length > 0) {
+    return true;
+  }
+  return false;
 };
 
 const styles = StyleSheet.create({

@@ -1,4 +1,5 @@
 import { ipAddress } from '../index';
+// this file will consist of global functions for images/pictures
 
 
 /**
@@ -9,8 +10,9 @@ export const getPhotosAPI = async () => {
 };
 
 /**
- *
- * @param body
+ * This function will post what is provided in the body
+ * 
+ * @param body - image
  */
 export const postPhotoAPI = async (body) => {
     return await fetch(`http://${ipAddress}:3000/api/photos`, {

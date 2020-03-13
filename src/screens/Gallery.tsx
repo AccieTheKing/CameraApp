@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import GalleryImage from './components/GalleryImage';
-import { getPhotosAPI } from '../endPoints/images/index';
+import { getPhotosAPI } from '../appLib/endPoints/images/index';
 
 const Gallery = () => {
   const [cachedImages, setCachedImages] = useState();
+  useEffect(() => {
+    initImages(setCachedImages);
 
-  useState(() => {
-    initImages(setCachedImages); // component will update/mount
-    // component will unmount
     return () => {
       setCachedImages(null);
     };
-  });
+  }, []);
 
   return (
     <View style={styles.galleryPage}>
