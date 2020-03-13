@@ -9,7 +9,9 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
  *
  * @param navigation - for navigating to another view in the stack navigation
  */
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
+  let test = route.params.user;
+  console.log(test);
   return (
     <View style={styles.container}>
       <View style={styles.contain}>
