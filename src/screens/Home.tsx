@@ -1,7 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import AwesomeButtonRed from 'react-native-really-awesome-button/src/themes/red.js';
-import AwesomeButtonC137 from 'react-native-really-awesome-button/src/themes/c137.js';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
 /**
@@ -9,9 +7,9 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
  *
  * @param navigation - for navigating to another view in the stack navigation
  */
-const Home = ({ navigation, route }) => {
-  let test = route.params.user;
-  console.log(test);
+const Home = ({ navigation }) => {
+  // let test = route.params.user;
+  // console.log(test);
   return (
     <View style={styles.container}>
       <View style={styles.contain}>
