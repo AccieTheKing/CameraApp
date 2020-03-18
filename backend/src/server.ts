@@ -6,6 +6,7 @@ import path from 'path';
 import pEvent from 'p-event';
 
 // Virgil SDK
+import { requireAuthHeader } from './api/userValidation';
 import { virgilJwt } from './api/virgilJwt';
 import { authenticate } from './api/authenticate';
 
@@ -28,9 +29,8 @@ export class ExpressServer {
     this.app.get('/', function (_req: Request, res: Response) {
       res.sendFile(path.resolve('public/express.html'));
     });
-
-    this.app.get('/virgil-jwt', virgilJwt); // generate token for user
-    // this.app.post('/authenticate', authenticate); //
+    this.app.post('/authenticate', authenticate);
+    this.app.get('/virgil-jwt', requireAuthHeader, virgilJwt); // generate token for user
   }
 
   async boot() {
