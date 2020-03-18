@@ -47,6 +47,7 @@
     "@types/react": "~16.9.0",
     "@types/react-native": "~0.60.23",
     "babel-preset-expo": "~8.0.0",
+    "dotenv": "^8.2.0",
     "install-peers": "^1.0.3",
     "jest-expo": "~36.0.1",
     "typescript": "~3.6.3"
