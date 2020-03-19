@@ -7,19 +7,17 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
  *
  * @param navigation - for navigating to another view in the stack navigation
  */
-const Home = ({ navigation }) => {
-  // let test = route.params.user;
-  // console.log(test);
+const Home = ({ navigation: { navigate } }) => {
   return (
     <View style={styles.container}>
       <View style={styles.contain}>
-        <AwesomeButtonRick width={200} type="primary" onPress={() => navigation.navigate('Camera')}>
+        <AwesomeButtonRick width={200} type="primary" onPress={() => navigate('Camera')}>
           <Text style={styles.txt}> Camera </Text>
         </AwesomeButtonRick>
-        <AwesomeButtonRick width={200} type="primary" onPress={() => navigation.navigate('Gallery')}>
+        <AwesomeButtonRick width={200} type="primary" onPress={() => navigate('Gallery')}>
           <Text style={styles.txt}>Gallery</Text>
         </AwesomeButtonRick>
-        <AwesomeButtonRick width={200} type="primary" onPress={() => navigation.navigate('Test')}>
+        <AwesomeButtonRick width={200} type="primary" onPress={() => navigate('Test')}>
           <Text style={styles.txt}> Test </Text>
         </AwesomeButtonRick>
       </View>

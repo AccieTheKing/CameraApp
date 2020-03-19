@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
-import { storeUsername, getStoredUsername, clearUserFromStorage } from '../appLib/systemStorage/username';
-import { initializeUser } from '../appLib/systemStorage/virgil';
+import { storeInGlobalStore, fetchFromGlobalStore, deleteFromGlobalStore } from '../appLib/systemStorage/global';
+import { getJWTtoken } from '../appLib/systemStorage/virgil';
 import auth from '@react-native-firebase/auth';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
@@ -9,12 +9,12 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
  * This is the SignIn component where the user can signin into the application
  */
 const SignIn = ({ navigation }) => {
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
   const [cachedUser, setCachedUser] = useState(false); // Did user already logged in before
 
   useEffect(() => {
-    getStoredUsername().then((data) => {
+    fetchFromGlobalStore('cameraAppUsername').then((data) => {
       if (data) {
         setUsername(data);
         setCachedUser(true);
@@ -109,13 +109,13 @@ const SignIn = ({ navigation }) => {
 const authenticateUser = async (navigation, username, password) => {
   if (textInputValidation(username) && textInputValidation(password)) {
     try {
-      const firebase = await auth().signInWithEmailAndPassword(username, password);
+      const firebase = await auth().signInWithEmailAndPassword(username, password); // check user's credentials
       const firebaseEmail = firebase.user.email;
-      const user = initializeUser(firebaseEmail);
+      await storeInGlobalStore('cameraAppUsername', firebaseEmail); // store username
       storeUsername(firebaseEmail);
       navigation.navigate('Home', { user });
     } catch (err) {
-      Alert.alert('Wrong credentials', `${err.message}`);
+      Alert.alert('Whoops', `${err.message}`);
     }
   } else {
     Alert.alert(`Ohhh?`, 'You forgot to fill in some fields');
@@ -129,7 +129,7 @@ const authenticateUser = async (navigation, username, password) => {
  * @param setCachedUser -
  */
 const cancelAutoLogin = (setCachedUser) => {
-  clearUserFromStorage().then(() => setCachedUser(false));
+  deleteFromGlobalStore('cameraAppUsername').then(() => setCachedUser(false));
 };
 
 /**
