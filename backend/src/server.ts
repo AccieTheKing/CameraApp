@@ -21,6 +21,9 @@ export class ExpressServer {
   constructor(options: ApplicationConfig = {}) {
     this.app = express(); // define express server
     this.lbApp = new BackendApplication(options); // initialize loopback app
+    // able to use req body
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.json());
 
     // register loopback app on /api route
     this.app.use('/api', this.lbApp.requestHandler);

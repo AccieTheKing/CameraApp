@@ -13,7 +13,19 @@ export class Photo extends Entity {
     type: 'string',
     required: true,
   })
-  name: string;
+  receiver: string
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  sender: string
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  data: string
 
 
   constructor(data?: Partial<Photo>) {

@@ -112,13 +112,28 @@ const authenticateUser = async (navigation, username, password) => {
       const firebase = await auth().signInWithEmailAndPassword(username, password); // check user's credentials
       const firebaseEmail = firebase.user.email;
       await storeInGlobalStore('cameraAppUsername', firebaseEmail); // store username
-      storeUsername(firebaseEmail);
-      navigation.navigate('Home', { user });
+      await storeJwt(firebaseEmail);
+      navigation.navigate('Home');
     } catch (err) {
       Alert.alert('Whoops', `${err.message}`);
     }
   } else {
     Alert.alert(`Ohhh?`, 'You forgot to fill in some fields');
+  }
+};
+
+/**
+ * This method will get the JWT, stores it and uses it to get the VirgilJWT
+ * in order to make use of the VirgilSDK
+ *
+ * @param identity
+ */
+const storeJwt = async (identity) => {
+  try {
+    const token = await getJWTtoken(identity);
+    await storeInGlobalStore('cameraAppJWT', token); // store JWT
+  } catch (err) {
+    console.log('Something went wrong with JWT token ' + err.message);
   }
 };
 
