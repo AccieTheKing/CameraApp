@@ -110,10 +110,9 @@ const authenticateUser = async (navigation, username, password) => {
   if (textInputValidation(username) && textInputValidation(password)) {
     try {
       const firebase = await auth().signInWithEmailAndPassword(username, password); // check user's credentials
-      const firebaseEmail = firebase.user.email;
-      await storeInGlobalStore('cameraAppUsername', firebaseEmail); // store username
-      await storeJwt(firebaseEmail);
-      navigation.navigate('Home');
+      const signedInUser = firebase.user.email;
+      await storeJwt(signedInUser);
+      navigation.navigate('Home', { signedInUser });
     } catch (err) {
       Alert.alert('Whoops', `${err.message}`);
     }

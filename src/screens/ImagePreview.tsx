@@ -4,7 +4,6 @@ import { postPhotoAPI } from '../appLib/endPoints/images/index';
 import { initializeUser } from '../appLib/systemStorage/virgil';
 import { fetchFromGlobalStore } from '../appLib/systemStorage/global';
 import RNFetchBlob from 'rn-fetch-blob';
-import AsyncStorage from '@react-native-community/async-storage';
 
 /**
  * This is the view is shown after a picture is taken
@@ -13,10 +12,13 @@ import AsyncStorage from '@react-native-community/async-storage';
  * @param goToHome - change boolean in parent view to show camera
  */
 const ImagePreview = ({ src, goToHome }) => {
-  const [receivantUser, setReceivantUser] = useState('hello@gmail.com'); // test
+  const [receivantUser, setReceivantUser] = useState(); // user that needs to get the image
   let currentUser;
 
   useEffect(() => {
+    fetchFromGlobalStore('cameraAppReceiver').then((receiver) => {
+      setReceivantUser(receiver);
+    });
     initCurrentUser()
       .then((user) => {
         // await user.register(); // no need to use the EThree.register() method on the Sign In flow.

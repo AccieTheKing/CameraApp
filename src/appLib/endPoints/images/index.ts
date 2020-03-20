@@ -5,7 +5,10 @@ import { ipAddress } from '../index';
 /**
  * This function fetches all the photos from the backend
  */
-export const getPhotosAPI = async () => {
+export const getPhotosAPI = async (username?) => {
+    if (username) {
+        return await fetch(`http://${ipAddress}:3000/api/photos?filter[where][receiver]=${username}`).then((res) => res.json());
+    }
     return await fetch(`http://${ipAddress}:3000/api/photos`).then((res) => res.json());
 };
 
