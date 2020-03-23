@@ -19,7 +19,7 @@ const Home = ({ navigation: { navigate }, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.contain}>
-        <AwesomeButtonRick width={200} type="primary" onPress={() => navigate('Camera')}>
+        <AwesomeButtonRick width={200} type="primary" onPress={() => navigate('Camera', { signedInUser, receiver })}>
           <Text style={styles.txt}> Camera </Text>
         </AwesomeButtonRick>
         <AwesomeButtonRick width={200} type="primary" onPress={() => navigate('Gallery', { signedInUser, receiver })}>
