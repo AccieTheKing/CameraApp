@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
-import { storeInGlobalStore, fetchFromGlobalStore, deleteFromGlobalStore } from '../appLib/systemStorage/global';
+import { storeInGlobalStore, deleteFromGlobalStore } from '../appLib/systemStorage/global';
 import { getJWTtoken } from '../appLib/systemStorage/virgil';
 import auth from '@react-native-firebase/auth';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
@@ -11,22 +11,6 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
 const SignIn = ({ navigation }) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-  const [cachedUser, setCachedUser] = useState(false); // Did user already logged in before
-
-  useEffect(() => {
-    fetchFromGlobalStore('cameraAppUsername').then((data) => {
-      if (data) {
-        setUsername(data);
-        setCachedUser(true);
-      } else {
-        setCachedUser(false);
-      }
-    });
-
-    return () => {
-      setCachedUser(false);
-    };
-  }, []);
 
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
@@ -36,65 +20,37 @@ const SignIn = ({ navigation }) => {
           <Text style={styles.applicationSubTitle}>CameraApp</Text>
         </View>
       </View>
-      {cachedUser === false ? (
-        <View style={styles.mainRow}>
-          <View style={styles.signInFieldsContainer}>
-            <View>
-              <Text style={styles.signInInputTitle}>Username</Text>
-              <TextInput
-                placeholder="Username"
-                style={styles.inputFieldStyle}
-                onChangeText={(username) => setUsername(username)}
-              />
-            </View>
-            <View>
-              <Text style={styles.signInInputTitle}>Password</Text>
-              <TextInput
-                placeholder="password"
-                style={styles.inputFieldStyle}
-                onChangeText={(password) => setPassword(password)}
-                secureTextEntry={true}
-              />
-            </View>
+      <View style={styles.mainRow}>
+        <View style={styles.signInFieldsContainer}>
+          <View>
+            <Text style={styles.signInInputTitle}>Username</Text>
+            <TextInput
+              placeholder="Username"
+              style={styles.inputFieldStyle}
+              onChangeText={(username) => setUsername(username)}
+            />
           </View>
-          <View style={styles.mainRow}>
-            <AwesomeButtonRick
-              width={200}
-              style={styles.loginBtn}
-              type="primary"
-              onPress={() => authenticateUser(navigation, username, password)}
-            >
-              <Text style={styles.loginBtnText}>Sign In</Text>
-            </AwesomeButtonRick>
+          <View>
+            <Text style={styles.signInInputTitle}>Password</Text>
+            <TextInput
+              placeholder="password"
+              style={styles.inputFieldStyle}
+              onChangeText={(password) => setPassword(password)}
+              secureTextEntry={true}
+            />
           </View>
         </View>
-      ) : (
         <View style={styles.mainRow}>
-          <View style={styles.mainRow}>
-            <Text>Sign in with user {username}</Text>
-          </View>
-          <View style={styles.mainRow}>
-            <Fragment>
-              <AwesomeButtonRick
-                width={200}
-                style={styles.loginBtn}
-                type="primary"
-                onPress={() => authenticateUser(navigation, username, password)}
-              >
-                <Text style={styles.loginBtnText}>Yes</Text>
-              </AwesomeButtonRick>
-              <AwesomeButtonRick
-                width={200}
-                style={styles.loginBtn}
-                type="primary"
-                onPress={() => cancelAutoLogin(setCachedUser)}
-              >
-                <Text style={styles.loginBtnText}>Cancel</Text>
-              </AwesomeButtonRick>
-            </Fragment>
-          </View>
+          <AwesomeButtonRick
+            width={200}
+            style={styles.loginBtn}
+            type="primary"
+            onPress={() => authenticateUser(navigation, username, password)}
+          >
+            <Text style={styles.loginBtnText}>Sign In</Text>
+          </AwesomeButtonRick>
         </View>
-      )}
+      </View>
     </ImageBackground>
   );
 };
