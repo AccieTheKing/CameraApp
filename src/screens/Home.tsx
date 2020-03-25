@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
+import { initCurrentUser } from '../appLib/systemStorage/virgil';
 
 /**
  * This is the view after a user has been signed in
@@ -13,7 +14,7 @@ const Home = ({ navigation: { navigate }, route }) => {
   const { signedInUser } = route.params;
 
   useEffect(() => {
-    initChatWith(signedInUser, setReceiver); // mockup selected user to chat with
+    initChatWith(signedInUser, setReceiver); // faked that a user has been selected to chat with
   }, []);
 
   return (

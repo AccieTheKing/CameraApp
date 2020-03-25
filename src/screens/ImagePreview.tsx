@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
-import { postPhotoAPI } from '../appLib/endPoints/images/index';
-import { initializeUser } from '../appLib/systemStorage/virgil';
-import { fetchFromGlobalStore } from '../appLib/systemStorage/global';
 import RNFetchBlob from 'rn-fetch-blob';
+import { postPhotoAPI } from '../appLib/endPoints/images/index';
+import { initCurrentUser } from '../appLib/systemStorage/virgil';
 
 /**
  * This is the view is shown after a picture is taken
@@ -12,25 +11,19 @@ import RNFetchBlob from 'rn-fetch-blob';
  * @param goToHome - change boolean in parent view to show camera
  */
 const ImagePreview = ({ src, sendBy, sendTo, goToHome }) => {
-  const [receiver, setReceiver] = useState(); // user that needs to get the image
-  let currentUser;
+  const [sender, setSender] = useState(sendBy); // user that's signed in
+  const [receiver, setReceiver] = useState(sendTo); // user that needs to get the image
 
   useEffect(() => {
-    setReceiver(sendTo);
-    initCurrentUser()
-      .then((user) => {
-        // await user.register(); // no need to use the EThree.register() method on the Sign In flow.
-        // await user.backupPrivateKey(`${process.env.VIRGIL_PRIVATE_TOKEN_BACKUP_PHRASE}_${user.identity}`);
-        currentUser = user;
-      })
-      .catch((err) => console.log(err));
+    // await user.register(); // no need to use the EThree.register() method on the Sign In flow.
+    // await user.backupPrivateKey(`${process.env.VIRGIL_PRIVATE_TOKEN_BACKUP_PHRASE}_${user.identity}`);
   }, []);
 
   return (
     <View style={styles.container}>
       <Image source={{ uri: src }} style={styles.previewImage} />
       <View style={styles.actionBtnRow}>
-        <TouchableOpacity style={styles.actionBtn} onPress={() => savePicture(currentUser, receiver, src)}>
+        <TouchableOpacity style={styles.actionBtn} onPress={() => savePicture(sender, receiver, src, goToHome)}>
           <Text style={styles.actionBtnText}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionBtn} onPress={() => goToHome(false)}>
@@ -42,44 +35,32 @@ const ImagePreview = ({ src, sendBy, sendTo, goToHome }) => {
 };
 
 /**
- * Retrieve stored JWT and use it to initialize user
- */
-const initCurrentUser = async () => {
-  try {
-    const token = await fetchFromGlobalStore('cameraAppJWT');
-    return initializeUser(token);
-  } catch (err) {
-    console.log('something went wrong with initializing user ' + err);
-  }
-};
-
-/**
  * This method saves taken picture into the database
  *
  * @param currentUser - email of user that is signed in
  * @param receiver - email of user that receives the photo
  * @param src - the temporary location of stored picture
+ * @param goToHome - go back to the camera screen
  */
-const savePicture = async (currentUser, receiver, src) => {
+const savePicture = async (sender, receiver, src, goToHome) => {
   try {
-    await RNFetchBlob.fs.readFile(src, 'base64').then(async (base64) => {
-      const receiverCard = await currentUser.findUsers(receiver); // search for receivant card
-      if (receiverCard) {
-        const encryptedData = await currentUser.encrypt(base64, receiverCard); // current user encrypts data for receiver
-        if (encryptedData) {
-          const body = JSON.stringify({
-            sender: currentUser.identity,
-            receiver: receiver,
-            data: encryptedData,
-          });
-          postPhotoAPI(body)
-            .then((res) => {
-              console.log('successfuly sent image');
-            })
-            .catch((err) => console.log('An error has been found  ', err));
-        }
-      }
-    }); // read file from cache location as base64
+    const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read temp location of stored picture
+    const initUser = await initCurrentUser(); // initialize current user with stored JWT
+    const receiverCard = await initUser.findUsers(receiver); // search for receivant card
+    const encryptedData = await initUser.encrypt(base64, receiverCard); // current user encrypts data for receiver
+
+    const body = JSON.stringify({
+      sender,
+      receiver: receiver,
+      data: encryptedData,
+    });
+
+    postPhotoAPI(body) // store encrypted data into the database
+      .then((res) => {
+        console.log('successfuly sent image');
+        goToHome(false);
+      })
+      .catch((err) => console.log('An error has been found  ', err));
   } catch (err) {
     console.log('Something went wrong: ' + err.message);
   }
