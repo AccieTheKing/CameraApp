@@ -119,7 +119,7 @@ export class PhotoController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('filter', getFilterSchemaFor(Photo)) filter?: Filter<Photo>
   ): Promise<Photo> {
     return this.photoRepository.findById(id, filter);
@@ -133,7 +133,7 @@ export class PhotoController {
     },
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -154,7 +154,7 @@ export class PhotoController {
     },
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.number('id') id: string,
     @requestBody() photo: Photo,
   ): Promise<void> {
     await this.photoRepository.replaceById(id, photo);
@@ -167,7 +167,7 @@ export class PhotoController {
       },
     },
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.photoRepository.deleteById(id);
   }
 }
