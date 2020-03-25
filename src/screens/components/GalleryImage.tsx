@@ -8,8 +8,29 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
  * images by giving a source as prop
  *
  */
-const GalleryImage = ({ id, src }) => {
+const GalleryImage = ({ id, src, removePhotoMethod }) => {
   const [showEdit, setShowEdit] = useState(false);
+  // show menu of image
+  const showEditMenu = (setShowEdit) => {
+    setShowEdit((showEdit) => (showEdit ? 'false' : 'true'));
+  };
+
+  /**
+   * This function will make use of the deletePicture method.
+   * It will remove a picture that has been stored in the backend.
+   *
+   * @param id
+   */
+  const deletePicture = (id) => {
+    deletePhotoAPI(id)
+      .then((res) => {
+        removePhotoMethod(id);
+        console.log(`successful deleted image ${res}`);
+      })
+      .catch((err) => {
+        console.log(`Something went wrong in the Gallery image: ${err.message}`);
+      });
+  };
 
   return (
     <View style={styles.imageContainer}>
@@ -23,28 +44,6 @@ const GalleryImage = ({ id, src }) => {
       </TouchableOpacity>
     </View>
   );
-};
-
-// show menu of image
-const showEditMenu = (setShowEdit) => {
-  setShowEdit((showEdit) => (showEdit ? 'false' : 'true'));
-};
-
-/**
- * This function will make use of the deletePicture method.
- * It will remove a picture that has been stored in the backend.
- *
- * @param id - the indentifier
- */
-const deletePicture = (id) => {
-  deletePhotoAPI(id)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((err) => {
-      console.log(`Something went wrong in the Gallery image: ${err.message}`);
-    });
 };
 
 const styles = StyleSheet.create({

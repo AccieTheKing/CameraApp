@@ -37,7 +37,7 @@ export const postPhotoAPI = async (body) => {
  * @param id - the id of a picture
  */
 export const deletePhotoAPI = async (id) => {
-    return await fetch(`http://${ipAddress}:3000/api/photos/${JSON.stringify(id)}`, {
+    return await fetch(`http://${ipAddress}:3000/api/photos/${id}`, {
         method: 'DELETE',
         headers: {
             Accept: 'application/json',
