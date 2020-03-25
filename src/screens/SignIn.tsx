@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
-import { storeInGlobalStore, deleteFromGlobalStore } from '../appLib/systemStorage/global';
+import { storeInGlobalStore } from '../appLib/systemStorage/global';
 import { getJWTtoken } from '../appLib/systemStorage/virgil';
 import auth from '@react-native-firebase/auth';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
@@ -89,17 +89,8 @@ const storeJwt = async (identity) => {
     await storeInGlobalStore('cameraAppJWT', token); // store JWT
   } catch (err) {
     console.log('Something went wrong with JWT token ' + err.message);
+    throw err;
   }
-};
-
-/**
- * This method will cancel the login and removes the stored username
- * from system memory
- *
- * @param setCachedUser -
- */
-const cancelAutoLogin = (setCachedUser) => {
-  deleteFromGlobalStore('cameraAppUsername').then(() => setCachedUser(false));
 };
 
 /**

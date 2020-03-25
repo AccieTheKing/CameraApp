@@ -1,5 +1,6 @@
 import { EThree } from '@virgilsecurity/e3kit-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { fetchFromGlobalStore } from '../global/index';
 import { ipAddress } from '../../endPoints/index';
 
 /**
@@ -26,6 +27,17 @@ export const getJWTtoken = async (identity) => {
     return response.json().then(data => data.authToken);
 }
 
+/**
+ * Retrieve stored JWT and use it to initialize user
+ */
+export const initCurrentUser = async () => {
+    try {
+        const token = await fetchFromGlobalStore('cameraAppJWT');
+        return initializeE3kit(token);
+    } catch (err) {
+        console.log('something went wrong with initializing user ' + err);
+    }
+};
 
 /**
  * This method will return the an initialised EThree instance and sets the
@@ -33,7 +45,7 @@ export const getJWTtoken = async (identity) => {
  * 
  * @param authToken - JWT from backend
  */
-export const initializeUser = (authToken) => {
+const initializeE3kit = (authToken) => {
     const token = getVirgilToken(authToken); // function that returns the virgil token
     return EThree.initialize(token, { AsyncStorage });
 };
