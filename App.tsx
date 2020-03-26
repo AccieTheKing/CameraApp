@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // screens
 import { Launch, LoadingScreen } from './src/screens/Launch';
 import SignIn from './src/screens/SignIn';
+import SignUp from './src/screens/SignUp';
 import Home from './src/screens/Home';
 import Camera from './src/screens/components/Camera';
 import Gallery from './src/screens/Gallery';
@@ -95,6 +96,7 @@ const App = () => {
             }}
           />
           <Stack.Screen name="SignIn" component={SignIn} />
+          <Stack.Screen name="SignUp" component={SignUp} />
         </React.Fragment>
         {/* ) : ( */}
         <React.Fragment>

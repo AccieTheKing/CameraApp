@@ -4,26 +4,6 @@ import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/ric
 import { storeUsername, getStoredUsername, clearUserFromStorage } from '../appLib/systemStorage/username';
 import auth from '@react-native-firebase/auth';
 
-const getUsername = async () => {
-  let username;
-  try {
-    AsyncStorage.getAllKeys().then((res) => console.log(res));
-    username = await AsyncStorage.getItem('cameraAppUsername');
-  } catch (err) {
-    console.log(err);
-  }
-
-  return username;
-};
-
-const storeUsername = async (username) => {
-  try {
-    await AsyncStorage.setItem('cameraAppUsername', username);
-  } catch (err) {
-    console.log('Something went wrong', err);
-  }
-};
-
 /**
  * This is the SignIn component where the user can signin into the application
  */
@@ -47,9 +27,9 @@ const SignIn = ({ navigation }) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(cachedUser);
-  });
+  // useEffect(() => {
+  //   console.log(cachedUser);
+  // });
 
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
@@ -85,7 +65,7 @@ const SignIn = ({ navigation }) => {
               width={200}
               style={styles.loginBtn}
               type="primary"
-              onPress={() => authenticateUser(username, password)}
+              onPress={() => authenticateUser(navigation, username, password)}
             >
               <Text style={styles.loginBtnText}>Sign In</Text>
             </AwesomeButtonRick>
@@ -102,7 +82,7 @@ const SignIn = ({ navigation }) => {
                 width={200}
                 style={styles.loginBtn}
                 type="primary"
-                onPress={() => authenticateUser(username, password)}
+                onPress={() => authenticateUser(navigation, username, password)}
               >
                 <Text style={styles.loginBtnText}>Yes</Text>
               </AwesomeButtonRick>
@@ -129,13 +109,14 @@ const SignIn = ({ navigation }) => {
  * @param username - email address of the user
  * @param password -  password of the user
  */
-const authenticateUser = async (username, password) => {
+const authenticateUser = async (navigation, username, password) => {
   if (textInputValidation(username) && textInputValidation(password)) {
     try {
       const data = await auth().signInWithEmailAndPassword(username, password);
       storeUsername(data.user.email);
+      navigation.navigate('Home');
     } catch (err) {
-      Alert.alert('Wrong credentials', `${err}`);
+      Alert.alert('Wrong credentials', `${err.message}`);
     }
   } else {
     Alert.alert(`Ohhh?`, 'You forgot to fill in some fields');
