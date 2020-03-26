@@ -3,17 +3,29 @@ import { Entity, model, property } from '@loopback/repository';
 @model()
 export class Photo extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: true,
   })
-  id: number;
+  id: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  name: string;
+  receiver: string
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  sender: string
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  data: string
 
 
   constructor(data?: Partial<Photo>) {

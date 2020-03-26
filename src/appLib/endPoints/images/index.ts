@@ -3,9 +3,15 @@ import { ipAddress } from '../index';
 
 
 /**
- * This function fetches all the photos from the backend
+ * This function will fetch the images that the user has received,
+ * or when no username has been given, it will return all the images
+ * 
+ * @param username - username of the receiving user that the photo is meant for to see 
  */
-export const getPhotosAPI = async () => {
+export const getPhotosAPI = async (username?) => {
+    if (username) {
+        return await fetch(`http://${ipAddress}:3000/api/photos?filter[where][receiver]=${username}`).then((res) => res.json());
+    }
     return await fetch(`http://${ipAddress}:3000/api/photos`).then((res) => res.json());
 };
 
@@ -24,3 +30,18 @@ export const postPhotoAPI = async (body) => {
         body,
     });
 };
+
+/**
+ * This function takes a id which deletes the 
+ * 
+ * @param id - the id of a picture
+ */
+export const deletePhotoAPI = async (id) => {
+    return await fetch(`http://${ipAddress}:3000/api/photos/${id}`, {
+        method: 'DELETE',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    });
+}

@@ -1,8 +1,9 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
-import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
-import { storeUsername, getStoredUsername, clearUserFromStorage } from '../appLib/systemStorage/username';
+import { storeInGlobalStore } from '../appLib/systemStorage/global';
+import { getJWTtoken } from '../appLib/systemStorage/virgil';
 import auth from '@react-native-firebase/auth';
+import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
 /**
  * This is the SignIn component where the user can signin into the application
@@ -10,26 +11,6 @@ import auth from '@react-native-firebase/auth';
 const SignIn = ({ navigation }) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-  const [cachedUser, setCachedUser] = useState(false); // user already logged in before
-
-  useEffect(() => {
-    getStoredUsername().then((data) => {
-      if (data) {
-        setUsername(data);
-        setCachedUser(true);
-      } else {
-        setCachedUser(false);
-      }
-    });
-
-    return () => {
-      setCachedUser(false);
-    };
-  }, []);
-
-  // useEffect(() => {
-  //   console.log(cachedUser);
-  // });
 
   return (
     <ImageBackground source={require('../img/appBackground4.png')} style={styles.applicationContainer}>
@@ -39,65 +20,37 @@ const SignIn = ({ navigation }) => {
           <Text style={styles.applicationSubTitle}>CameraApp</Text>
         </View>
       </View>
-      {cachedUser === false ? (
-        <View style={styles.mainRow}>
-          <View style={styles.signInFieldsContainer}>
-            <View>
-              <Text style={styles.signInInputTitle}>Username</Text>
-              <TextInput
-                placeholder="Username"
-                style={styles.inputFieldStyle}
-                onChangeText={(username) => setUsername(username)}
-              />
-            </View>
-            <View>
-              <Text style={styles.signInInputTitle}>Password</Text>
-              <TextInput
-                placeholder="password"
-                style={styles.inputFieldStyle}
-                onChangeText={(password) => setPassword(password)}
-                secureTextEntry={true}
-              />
-            </View>
+      <View style={styles.mainRow}>
+        <View style={styles.signInFieldsContainer}>
+          <View>
+            <Text style={styles.signInInputTitle}>Username</Text>
+            <TextInput
+              placeholder="Username"
+              style={styles.inputFieldStyle}
+              onChangeText={(username) => setUsername(username)}
+            />
           </View>
-          <View style={styles.mainRow}>
-            <AwesomeButtonRick
-              width={200}
-              style={styles.loginBtn}
-              type="primary"
-              onPress={() => authenticateUser(navigation, username, password)}
-            >
-              <Text style={styles.loginBtnText}>Sign In</Text>
-            </AwesomeButtonRick>
+          <View>
+            <Text style={styles.signInInputTitle}>Password</Text>
+            <TextInput
+              placeholder="password"
+              style={styles.inputFieldStyle}
+              onChangeText={(password) => setPassword(password)}
+              secureTextEntry={true}
+            />
           </View>
         </View>
-      ) : (
         <View style={styles.mainRow}>
-          <View style={styles.mainRow}>
-            <Text>Sign in with user {username}</Text>
-          </View>
-          <View style={styles.mainRow}>
-            <Fragment>
-              <AwesomeButtonRick
-                width={200}
-                style={styles.loginBtn}
-                type="primary"
-                onPress={() => authenticateUser(navigation, username, password)}
-              >
-                <Text style={styles.loginBtnText}>Yes</Text>
-              </AwesomeButtonRick>
-              <AwesomeButtonRick
-                width={200}
-                style={styles.loginBtn}
-                type="primary"
-                onPress={() => cancelAutoLogin(setCachedUser)}
-              >
-                <Text style={styles.loginBtnText}>Cancel</Text>
-              </AwesomeButtonRick>
-            </Fragment>
-          </View>
+          <AwesomeButtonRick
+            width={200}
+            style={styles.loginBtn}
+            type="primary"
+            onPress={() => authenticateUser(navigation, username, password)}
+          >
+            <Text style={styles.loginBtnText}>Sign In</Text>
+          </AwesomeButtonRick>
         </View>
-      )}
+      </View>
     </ImageBackground>
   );
 };
@@ -112,11 +65,12 @@ const SignIn = ({ navigation }) => {
 const authenticateUser = async (navigation, username, password) => {
   if (textInputValidation(username) && textInputValidation(password)) {
     try {
-      const data = await auth().signInWithEmailAndPassword(username, password);
-      storeUsername(data.user.email);
-      navigation.navigate('Home');
+      const firebase = await auth().signInWithEmailAndPassword(username, password); // check user's credentials
+      const signedInUser = firebase.user.email;
+      await storeJwt(signedInUser);
+      navigation.navigate('Home', { signedInUser });
     } catch (err) {
-      Alert.alert('Wrong credentials', `${err.message}`);
+      Alert.alert('Whoops', `${err.message}`);
     }
   } else {
     Alert.alert(`Ohhh?`, 'You forgot to fill in some fields');
@@ -124,13 +78,19 @@ const authenticateUser = async (navigation, username, password) => {
 };
 
 /**
- * This method will cancel the login and removes the stored username
- * from system memory
+ * This method will get the JWT, stores it and uses it to get the VirgilJWT
+ * in order to make use of the VirgilSDK
  *
- * @param setCachedUser -
+ * @param identity
  */
-const cancelAutoLogin = (setCachedUser) => {
-  clearUserFromStorage().then(() => setCachedUser(false));
+const storeJwt = async (identity) => {
+  try {
+    const token = await getJWTtoken(identity);
+    await storeInGlobalStore('cameraAppJWT', token); // store JWT
+  } catch (err) {
+    console.log('Something went wrong with JWT token ' + err.message);
+    throw err;
+  }
 };
 
 /**

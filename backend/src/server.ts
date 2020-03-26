@@ -6,6 +6,7 @@ import path from 'path';
 import pEvent from 'p-event';
 
 // Virgil SDK
+import { requireAuthHeader } from './api/userValidation';
 import { virgilJwt } from './api/virgilJwt';
 import { authenticate } from './api/authenticate';
 
@@ -20,6 +21,9 @@ export class ExpressServer {
   constructor(options: ApplicationConfig = {}) {
     this.app = express(); // define express server
     this.lbApp = new BackendApplication(options); // initialize loopback app
+    // able to use req body
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.json());
 
     // register loopback app on /api route
     this.app.use('/api', this.lbApp.requestHandler);
@@ -28,9 +32,8 @@ export class ExpressServer {
     this.app.get('/', function (_req: Request, res: Response) {
       res.sendFile(path.resolve('public/express.html'));
     });
-
-    this.app.get('/virgil-jwt', virgilJwt); // generate token for user
-    // this.app.post('/authenticate', authenticate); //
+    this.app.post('/authenticate', authenticate);
+    this.app.get('/virgil-jwt', requireAuthHeader, virgilJwt); // generate token for user
   }
 
   async boot() {
