@@ -14,10 +14,7 @@ const ImagePreview = ({ src, sendBy, sendTo, goToHome }) => {
   const [sender, setSender] = useState(sendBy); // user that's signed in
   const [receiver, setReceiver] = useState(sendTo); // user that needs to get the image
 
-  useEffect(() => {
-    // await user.register(); // no need to use the EThree.register() method on the Sign In flow.
-    // await user.backupPrivateKey(`${process.env.VIRGIL_PRIVATE_TOKEN_BACKUP_PHRASE}_${user.identity}`);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <View style={styles.container}>

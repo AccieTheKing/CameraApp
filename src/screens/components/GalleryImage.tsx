@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { deletePhotoAPI } from '../../appLib/endPoints/images';
-import { StyleSheet, View, Image, Dimensions, Text } from 'react-native';
+import { StyleSheet, View, Image, Dimensions, Text, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 /**
@@ -10,6 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
  */
 const GalleryImage = ({ id, src, removePhotoMethod }) => {
   const [showEdit, setShowEdit] = useState(false);
+
   // show menu of image
   const showEditMenu = (setShowEdit) => {
     setShowEdit((showEdit) => (showEdit ? 'false' : 'true'));
@@ -22,21 +23,30 @@ const GalleryImage = ({ id, src, removePhotoMethod }) => {
    * @param id
    */
   const deletePicture = (id) => {
-    deletePhotoAPI(id)
-      .then((res) => {
-        removePhotoMethod(id);
-        console.log(`successful deleted image ${res}`);
-      })
-      .catch((err) => {
-        console.log(`Something went wrong in the Gallery image: ${err.message}`);
-      });
+    Alert.alert('Are you sure?', 'Do you want to delete this Image?', [
+      {
+        text: 'OK',
+        onPress: () => {
+          deletePhotoAPI(id)
+            .then((res) => {
+              removePhotoMethod(id);
+              console.log(`successful deleted image`);
+            })
+            .catch((err) => {
+              console.log(`Something went wrong in the Gallery image: ${err.message}`);
+            });
+          setShowEdit(false);
+        },
+      },
+      { text: 'Cancel', onPress: () => setShowEdit(false), style: 'cancel' },
+    ]);
   };
 
   return (
     <View style={styles.imageContainer}>
       {showEdit && (
         <TouchableOpacity style={styles.deletingBtn} onPress={() => deletePicture(id)}>
-          <Text>X</Text>
+          <Text style={styles.deletingBtnText}>X</Text>
         </TouchableOpacity>
       )}
       <TouchableOpacity onLongPress={() => showEditMenu(setShowEdit)}>
@@ -56,9 +66,16 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   deletingBtn: {
+    flex: 1,
+    justifyContent: 'center',
     borderRadius: 100,
+    backgroundColor: 'red',
     width: 25,
     height: 25,
+  },
+  deletingBtnText: {
+    color: '#FFF',
+    textAlign: 'center',
   },
 });
 
