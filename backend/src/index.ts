@@ -1,9 +1,9 @@
-import { BackendApplication } from './application';
-import { ExpressServer } from './server';
-import { ApplicationConfig } from '@loopback/core';
+import {BackendApplication} from './application';
+import {ExpressServer} from './server';
+import {ApplicationConfig} from '@loopback/core';
 import * as dotenv from 'dotenv';
 
-export { ExpressServer, BackendApplication };
+export {ExpressServer, BackendApplication};
 export async function main(options: ApplicationConfig = {}) {
   dotenv.config(); // for making use of .env files
   const server = new ExpressServer(options);

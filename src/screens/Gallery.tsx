@@ -61,6 +61,8 @@ const initImages = async (setImages, setRefresh, signedInUser, receiver) => {
   try {
     const retrievedImages = await getPhotosAPI(signedInUser); // get images that are for the signed in user
     const initUser = await initCurrentUser(); // create Virgil instance of the signed in user
+    await initUser.register(); // no need to use the EThree.register() method on the Sign In flow.
+    await initUser.backupPrivateKey(`${process.env.VIRGIL_PRIVATE_TOKEN_BACKUP_PHRASE}_${initUser.identity}`);
     const receiverCard = await initUser.findUsers(receiver); // get the card of user that sent the message
     // loop through all images
     retrievedImages.map(async (image) => {

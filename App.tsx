@@ -44,7 +44,7 @@ const App = () => {
         />
         <Stack.Screen name="Camera" component={Camera} />
         <Stack.Screen name="Gallery" component={Gallery} />
-        <Stack.Screen name="Test" component={test} />
+        <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>
     </NavigationContainer>
   );
