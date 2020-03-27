@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { generateUserToken, pseudoEncodeToken } from './userValidation';
+import {Request, Response} from 'express';
+import {generateUserToken, pseudoEncodeToken} from './userValidation';
 
 export const authenticate = (req: Request, res: Response) => {
   if (!req.body || !req.body.identity) {
@@ -10,5 +10,5 @@ export const authenticate = (req: Request, res: Response) => {
 
   const token = generateUserToken();
   pseudoEncodeToken(req.body.identity, token);
-  res.json({ authToken: token });
-}
+  res.json({authToken: token});
+};

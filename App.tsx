@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 // navigation
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // screens
 import { Launch, LoadingScreen } from './src/screens/Launch';
 import SignIn from './src/screens/SignIn';
+import SignUp from './src/screens/SignUp';
 import Home from './src/screens/Home';
 import Camera from './src/screens/components/Camera';
 import Gallery from './src/screens/Gallery';
@@ -43,13 +44,14 @@ const App = () => {
         />
         <Stack.Screen name="Camera" component={Camera} />
         <Stack.Screen name="Gallery" component={Gallery} />
-        <Stack.Screen name="Test" component={test} />
+        <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-function test({ navigation }) {
+function Test({ navigation, test }) {
+  console.log(test);
   return (
     <View>
       <Text>Hallo dit is een test</Text>
