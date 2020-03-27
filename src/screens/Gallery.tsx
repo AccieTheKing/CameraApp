@@ -31,8 +31,8 @@ const Gallery = ({ route }) => {
   // Show some loading text while images are being decrypted
   if (refresh) {
     return (
-      <View style={styles.galleryPage}>
-        <Text>Loading</Text>
+      <View style={styles.loadingAnimationContainer}>
+        <Text style={styles.loadingAnimationText}>Loading...</Text>
       </View>
     );
   }
@@ -77,6 +77,14 @@ const initImages = async (setImages, setRefresh, signedInUser, receiver) => {
 const styles = StyleSheet.create({
   galleryPage: {
     flex: 1,
+  },
+  loadingAnimationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingAnimationText: {
+    fontSize: 28,
   },
   listStyle: {
     maxWidth: Dimensions.get('window').width,
