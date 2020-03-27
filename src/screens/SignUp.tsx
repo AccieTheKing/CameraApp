@@ -1,27 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 import { StyleSheet, View, Text, ImageBackground, TextInput } from 'react-native';
-import { getStoredUsername } from '../appLib/systemStorage/username';
 import auth from '@react-native-firebase/auth';
 
 const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-  const [cachedUser, setCachedUser] = useState(false);
-
-  useEffect(() => {
-    getStoredUsername().then((data) => {
-      if (data) {
-        setUsername(data);
-      } else {
-        setCachedUser(false);
-      }
-    });
-
-    return () => {
-      setCachedUser(false);
-    };
-  }, []);
 
   async function register(navigation, email, password) {
     try {
