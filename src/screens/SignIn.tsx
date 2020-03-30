@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
 import { storeInGlobalStore } from '../appLib/systemStorage/global';
-import { getJWTtoken } from '../appLib/systemStorage/virgil';
+import { getJWTtoken, initCurrentUser } from '../appLib/systemStorage/virgil';
 import auth from '@react-native-firebase/auth';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
@@ -68,6 +68,11 @@ const authenticateUser = async (navigation, username, password) => {
       const firebase = await auth().signInWithEmailAndPassword(username, password); // check user's credentials
       const signedInUser = firebase.user.email;
       await storeJwt(signedInUser);
+      const initUser = await initCurrentUser(); // initialize current user with stored JWT
+      const hasLocalPrivateKey = await initUser.hasLocalPrivateKey();
+      if (!hasLocalPrivateKey) {
+        await initUser.restorePrivateKey(`${process.env.VIRGIL_PRIVATE_TOKEN_BACKUP_PHRASE}_${initUser.identity}`);
+      }
       navigation.navigate('Home', { signedInUser });
     } catch (err) {
       Alert.alert('Whoops', `${err.message}`);
