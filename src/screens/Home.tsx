@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
-import { initCurrentUser } from '../appLib/systemStorage/virgil';
 
 /**
  * This is the view after a user has been signed in

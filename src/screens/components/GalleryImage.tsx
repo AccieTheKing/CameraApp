@@ -8,8 +8,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
  * images by giving a source as prop
  *
  */
-const GalleryImage = ({ id, src, removePhotoMethod }) => {
+const GalleryImage = ({ id, data, removePhotoMethod }) => {
   const [showEdit, setShowEdit] = useState(false);
+  const parsedData = JSON.parse(data);
 
   // show menu of image
   const showEditMenu = (setShowEdit) => {
@@ -50,7 +51,7 @@ const GalleryImage = ({ id, src, removePhotoMethod }) => {
         </TouchableOpacity>
       )}
       <TouchableOpacity onLongPress={() => showEditMenu(setShowEdit)}>
-        <Image style={styles.imageStyle} source={{ uri: `data:image/png;base64,${src}` }} />
+        <Image style={styles.imageStyle} source={{ uri: `data:image/png;base64,${parsedData.src}` }} />
       </TouchableOpacity>
     </View>
   );

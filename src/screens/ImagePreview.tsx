@@ -10,7 +10,7 @@ import { initCurrentUser } from '../appLib/systemStorage/virgil';
  * @param src - base64 string of image
  * @param goToHome - change boolean in parent view to show camera
  */
-const ImagePreview = ({ src, sendBy, sendTo, goToHome }) => {
+const ImagePreview = ({ data, sendBy, sendTo, goToHome }) => {
   const [sender, setSender] = useState(sendBy); // user that's signed in
   const [receiver, setReceiver] = useState(sendTo); // user that needs to get the image
 
@@ -18,9 +18,9 @@ const ImagePreview = ({ src, sendBy, sendTo, goToHome }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: src }} style={styles.previewImage} />
+      <Image source={{ uri: data.src }} style={styles.previewImage} />
       <View style={styles.actionBtnRow}>
-        <TouchableOpacity style={styles.actionBtn} onPress={() => savePicture(sender, receiver, src, goToHome)}>
+        <TouchableOpacity style={styles.actionBtn} onPress={() => savePicture(sender, receiver, data, goToHome)}>
           <Text style={styles.actionBtnText}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionBtn} onPress={() => goToHome(false)}>
@@ -39,12 +39,13 @@ const ImagePreview = ({ src, sendBy, sendTo, goToHome }) => {
  * @param src - the temporary location of stored picture
  * @param goToHome - go back to the camera screen
  */
-const savePicture = async (sender, receiver, src, goToHome) => {
+const savePicture = async (sender, receiver, data, goToHome) => {
   try {
-    const base64 = await RNFetchBlob.fs.readFile(src, 'base64'); // read temp location of stored picture
+    const base64 = await RNFetchBlob.fs.readFile(data.src, 'base64'); // read temp location of stored picture
     const initUser = await initCurrentUser(); // initialize current user with stored JWT
     const receiverCard = await initUser.findUsers(receiver); // search for receivant card
-    const encryptedData = await initUser.encrypt(base64, receiverCard); // current user encrypts data for receiver
+    const pictureData = JSON.stringify({ ...data, src: base64 }); // add base64 string to data
+    const encryptedData = await initUser.encrypt(pictureData, receiverCard); // current user encrypts data for receiver
 
     const body = JSON.stringify({
       sender,
@@ -59,7 +60,7 @@ const savePicture = async (sender, receiver, src, goToHome) => {
       })
       .catch((err) => console.log('An error has been found  ', err));
   } catch (err) {
-    console.log('Something went wrong: ' + err.message);
+    console.log('Something went wrong: ' + err);
   }
 };
 
