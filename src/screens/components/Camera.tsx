@@ -70,7 +70,7 @@ export default class Camera extends PureComponent {
           pictureOrientation: data.pictureOrientation,
           height: data.height,
           width: data.width,
-          dateTime: new Date().toLocaleString(),
+          dateTime: new Date(),
         },
         showPreview: true,
       });

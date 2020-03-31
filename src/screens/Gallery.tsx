@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, Text, Dimensions } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Dimensions, ScrollView } from 'react-native';
 import GalleryImage from './components/GalleryImage';
 import { initCurrentUser } from '../appLib/systemStorage/virgil';
 import { getPhotosAPI } from '../appLib/endPoints/images/index';
@@ -37,19 +37,7 @@ const Gallery = ({ route }) => {
     );
   }
 
-  return (
-    <View style={styles.galleryPage}>
-      <FlatList
-        data={images}
-        style={styles.listStyle}
-        renderItem={({ item }) => (
-          <GalleryImage data={item.data} id={item.id} removePhotoMethod={removeImageFromList} />
-        )}
-        numColumns={2}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
-  );
+  return <ScrollView style={styles.galleryPage}>{MontlyListView(images, removeImageFromList)}</ScrollView>;
 };
 
 /**
@@ -78,9 +66,68 @@ const initImages = async (setImages, setRefresh, signedInUser, receiver) => {
   }
 };
 
+/**
+ * This method will return a list view per month of the images
+ * 
+ * @param images - image data from database
+ * @param removeImageFromList - function to delete image
+ */
+const MontlyListView = (images, removeImageFromList) => {
+  const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  const dates = {
+    jan: [],
+    feb: [],
+    mar: [],
+    apr: [],
+    may: [],
+    jun: [],
+    jul: [],
+    aug: [],
+    sep: [],
+    okt: [],
+    nov: [],
+    dec: [],
+  }; // will hold the images based on the month they were taken
+
+  images.map((image) => {
+    const data = JSON.parse(image.data); // parse object to get json data
+    const dateTime = new Date(data.dateTime); // wrap dateTime into Date object to make use of Date methods
+    const imgMonth = months[dateTime.getMonth()]; // get month when image has been taken
+    dates[imgMonth].push({ id: image.id, data: image.data }); // push the image into the correct month
+  });
+
+  // Loop through each month
+  return months.map((month, index) => {
+    if (dates[month]) {
+      return (
+        // Per month loop through images
+        <View key={index}>
+          <Text style={styles.monthTitle}>{month}</Text>
+          <View style={styles.imagesRow}>
+            {dates[month].map((item) => {
+              return (
+                <GalleryImage key={item.id} id={item.id} data={item.data} removePhotoMethod={removeImageFromList} />
+              );
+            })}
+          </View>
+        </View>
+      );
+    }
+  });
+};
+
 const styles = StyleSheet.create({
   galleryPage: {
     flex: 1,
+  },
+  monthTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  imagesRow: {
+    flex: 1,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
   },
   loadingAnimationContainer: {
     flex: 1,
@@ -89,9 +136,6 @@ const styles = StyleSheet.create({
   },
   loadingAnimationText: {
     fontSize: 28,
-  },
-  listStyle: {
-    maxWidth: Dimensions.get('window').width,
   },
 });
 

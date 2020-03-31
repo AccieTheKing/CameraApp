@@ -45,6 +45,7 @@ const GalleryImage = ({ id, data, removePhotoMethod }) => {
 
   return (
     <View style={styles.imageContainer}>
+      <Text>{photoDateTimeTransform(parsedData.dateTime)}</Text>
       {showEdit && (
         <TouchableOpacity style={styles.deletingBtn} onPress={() => deletePicture(id)}>
           <Text style={styles.deletingBtnText}>X</Text>
@@ -57,8 +58,32 @@ const GalleryImage = ({ id, data, removePhotoMethod }) => {
   );
 };
 
+/**
+ * This method will transform and format the dateTimeStringUTC to
+ * a wanted string
+ *
+ * @param dateTime
+ */
+const photoDateTimeTransform = (dateTime) => {
+  const photoDate = new Date(dateTime);
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const date = photoDate.getUTCDate();
+  const day = days[photoDate.getDay()];
+  let min = photoDate.getMinutes();
+
+  const getTime = () => {
+    if (min < 10) {
+      min = '0' + min;
+    }
+    return `${photoDate.getHours()}:${min}`;
+  };
+
+  return `${day} - ${date} - ${getTime()}`;
+};
+
 const styles = StyleSheet.create({
   imageContainer: {
+    flexBasis: Dimensions.get('window').width / 2,
     width: Dimensions.get('window').width / 2,
   },
   imageStyle: {
