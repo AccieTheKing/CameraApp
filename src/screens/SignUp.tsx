@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 import { StyleSheet, View, Text, ImageBackground, TextInput } from 'react-native';
+import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 import auth from '@react-native-firebase/auth';
+import { initCurrentUser, storeJwt } from '../appLib/systemStorage/virgil';
 
 const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState(null);
@@ -10,7 +11,10 @@ const SignUp = ({ navigation }) => {
   async function register(navigation, email, password) {
     try {
       await auth().createUserWithEmailAndPassword(email, password);
-      navigation.navigate('Home');
+      await storeJwt(email);
+      const user = await initCurrentUser();
+      user.register();
+      navigation.navigate('SignIn');
     } catch (e) {
       console.error(e.message);
     }

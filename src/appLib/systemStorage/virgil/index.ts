@@ -1,16 +1,43 @@
 import { EThree } from '@virgilsecurity/e3kit-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { fetchFromGlobalStore } from '../global/index';
+import { fetchFromGlobalStore, storeInGlobalStore } from '../global/index';
 import { ipAddress } from '../../endPoints/index';
 
 /**
+ * This method will use the identity of the user to get the JWT and store it 
+ *
+ * @param identity
+ */
+export const storeJwt = async (identity) => {
+    try {
+        const token = await getJWTtoken(identity);
+        await storeInGlobalStore('cameraAppJWT', token); // store JWT
+    } catch (err) {
+        console.log('Something went wrong with JWT token ' + err.message);
+        throw err;
+    }
+};
+
+/**
+ * Retrieve stored JWT and use it to return an initialized user
+ */
+export const initCurrentUser = async () => {
+    try {
+        const token = await fetchFromGlobalStore('cameraAppJWT');
+        return initializeE3kit(token);
+    } catch (err) {
+        console.log('something went wrong with initializing user ' + err);
+    }
+};
+
+
+/**
  * This function returns a token that will be used to authenticate requests
- * to the backend. This is a simplified solution without any real protection, so here you need use your
- * application authentication mechanism.
+ * to the backend. 
  * 
  * @param identity - email address
  */
-export const getJWTtoken = async (identity) => {
+const getJWTtoken = async (identity) => {
     const response = await fetch(`http://${ipAddress}:3000/authenticate`, {
         method: 'POST',
         headers: {
@@ -26,18 +53,6 @@ export const getJWTtoken = async (identity) => {
 
     return response.json().then(data => data.authToken);
 }
-
-/**
- * Retrieve stored JWT and use it to initialize user
- */
-export const initCurrentUser = async () => {
-    try {
-        const token = await fetchFromGlobalStore('cameraAppJWT');
-        return initializeE3kit(token);
-    } catch (err) {
-        console.log('something went wrong with initializing user ' + err);
-    }
-};
 
 /**
  * This method will return the an initialised EThree instance and sets the

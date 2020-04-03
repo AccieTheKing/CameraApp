@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, TextInput, Alert } from 'react-native';
-import { storeInGlobalStore } from '../appLib/systemStorage/global';
-import { getJWTtoken, initCurrentUser } from '../appLib/systemStorage/virgil';
+import { storeJwt, initCurrentUser } from '../appLib/systemStorage/virgil';
 import auth from '@react-native-firebase/auth';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick.js';
 
@@ -79,22 +78,6 @@ const authenticateUser = async (navigation, username, password) => {
     }
   } else {
     Alert.alert(`Ohhh?`, 'You forgot to fill in some fields');
-  }
-};
-
-/**
- * This method will get the JWT, stores it and uses it to get the VirgilJWT
- * in order to make use of the VirgilSDK
- *
- * @param identity
- */
-const storeJwt = async (identity) => {
-  try {
-    const token = await getJWTtoken(identity);
-    await storeInGlobalStore('cameraAppJWT', token); // store JWT
-  } catch (err) {
-    console.log('Something went wrong with JWT token ' + err.message);
-    throw err;
   }
 };
 
