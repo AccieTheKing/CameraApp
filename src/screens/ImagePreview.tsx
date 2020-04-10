@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import { postPhotoAPI } from '../appLib/endPoints/images/index';
@@ -10,11 +10,9 @@ import { initCurrentUser } from '../appLib/systemStorage/virgil';
  * @param src - base64 string of image
  * @param goToHome - change boolean in parent view to show camera
  */
-const ImagePreview = ({ data, sendBy, sendTo, goToHome }) => {
-  const [sender, setSender] = useState(sendBy); // user that's signed in
-  const [receiver, setReceiver] = useState(sendTo); // user that needs to get the image
-
-  useEffect(() => {}, []);
+const ImagePreview = ({ data, users, goToHome }) => {
+  const [sender, setSender] = useState(users[0]); // user that's signed in
+  const [receiver, setReceiver] = useState(users[1]); // user that needs to get the image
 
   return (
     <View style={styles.container}>

@@ -45,8 +45,7 @@ export default class Camera extends PureComponent {
       return (
         <ImagePreview
           data={this.state.data}
-          sendBy={this.state.signedInUser}
-          sendTo={this.state.receiver}
+          users={[this.state.signedInUser, this.state.receiver]}
           goToHome={this.showHome.bind(this)}
         />
       );

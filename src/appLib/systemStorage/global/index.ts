@@ -20,7 +20,7 @@ export const fetchFromGlobalStore = async (key: string) => {
     try {
         data = await AsyncStorage.getItem(key);
     } catch (err) {
-        console.log(`The following went wrong with retrieving the ${key}:`, err);
+        console.log(`The following went wrong with retrieving the ${key}:`, err.message);
     }
     return data;
 }
