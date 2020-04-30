@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, Text, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import GalleryImage from './components/GalleryImage';
 import { initCurrentUser } from '../appLib/systemStorage/virgil';
 import { getPhotosAPI } from '../appLib/endPoints/images/index';
@@ -37,7 +37,7 @@ const Gallery = ({ route }) => {
     );
   }
 
-  return <ScrollView style={styles.galleryPage}>{MontlyListView(images, removeImageFromList)}</ScrollView>;
+  return <ScrollView style={styles.galleryPage}>{ListView(images, removeImageFromList)}</ScrollView>;
 };
 
 /**
@@ -51,8 +51,6 @@ const initImages = async (setImages, setRefresh, signedInUser, receiver) => {
   try {
     const retrievedImages = await getPhotosAPI(signedInUser); // get images that are for the signed in user
     const initUser = await initCurrentUser(); // create Virgil instance of the signed in user
-    // await initUser.register(); // no need to use the EThree.register() method on the Sign In flow.
-    // await initUser.restorePrivateKey(`${process.env.VIRGIL_PRIVATE_TOKEN_BACKUP_PHRASE}_${initUser.identity}`);
     const receiverCard = await initUser.findUsers(receiver); // get the card of user that sent the message
     // loop through all images
     retrievedImages.map(async (image) => {
@@ -68,57 +66,77 @@ const initImages = async (setImages, setRefresh, signedInUser, receiver) => {
 
 /**
  * This method will return a list view per month of the images
- * 
+ *
  * @param images - image data from database
  * @param removeImageFromList - function to delete image
  */
-const MontlyListView = (images, removeImageFromList) => {
-  const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const ListView = (images, removeImageFromList) => {
+  const years = {};
   const dates = {
-    jan: [],
-    feb: [],
-    mar: [],
-    apr: [],
-    may: [],
-    jun: [],
-    jul: [],
-    aug: [],
-    sep: [],
-    okt: [],
-    nov: [],
-    dec: [],
+    Jan: [],
+    Feb: [],
+    Mar: [],
+    Apr: [],
+    May: [],
+    Jun: [],
+    Jul: [],
+    Aug: [],
+    Sep: [],
+    Okt: [],
+    Nov: [],
+    Dec: [],
   }; // will hold the images based on the month they were taken
 
   images.map((image) => {
     const data = JSON.parse(image.data); // parse object to get json data
     const dateTime = new Date(data.dateTime); // wrap dateTime into Date object to make use of Date methods
-    const imgMonth = months[dateTime.getMonth()]; // get month when image has been taken
-    dates[imgMonth].push({ id: image.id, data: image.data }); // push the image into the correct month
+    // get month when image has been taken
+    Object.keys(dates).map((value, index) => {
+      if (dateTime.getMonth() === index) {
+        dates[value].push({ id: image.id, data: image.data }); // push the image into the correct month
+      }
+    });
+
+    if (years[dateTime.getFullYear()] == null) {
+      years[dateTime.getFullYear()] = [];
+    }
   });
 
-  // Loop through each month
-  return months.map((month, index) => {
-    if (dates[month]) {
-      return (
-        // Per month loop through images
-        <View key={index}>
-          <Text style={styles.monthTitle}>{month}</Text>
-          <View style={styles.imagesRow}>
-            {dates[month].map((item) => {
-              return (
-                <GalleryImage key={item.id} id={item.id} data={item.data} removePhotoMethod={removeImageFromList} />
-              );
-            })}
-          </View>
-        </View>
-      );
-    }
+  // Add the images per year
+  Object.keys(years).map((e) => {
+    years[e].push(dates);
+  });
+
+  return Object.keys(years).map((year, i) => {
+    return (
+      <View key={i}>
+        <Text style={styles.yearTitle}>{year}</Text>
+        {Object.keys(dates).map((month, i) => {
+          // Per month loop through images per
+          return (
+            <View key={i}>
+              <Text style={styles.monthTitle}>{month}</Text>
+              <View style={styles.imagesRow}>
+                {dates[month].map((item, key) => (
+                  <GalleryImage key={key} id={item.id} data={item.data} removePhotoMethod={removeImageFromList} />
+                ))}
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    );
   });
 };
 
 const styles = StyleSheet.create({
   galleryPage: {
     flex: 1,
+  },
+  yearTitle: {
+    fontSize: 34,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   monthTitle: {
     fontSize: 28,

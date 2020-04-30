@@ -14,7 +14,7 @@ const GalleryImage = ({ id, data, removePhotoMethod }) => {
 
   // show menu of image
   const showEditMenu = (setShowEdit) => {
-    setShowEdit((showEdit) => (showEdit ? 'false' : 'true'));
+    setShowEdit((showEdit) => (showEdit ? false : true));
   };
 
   /**
@@ -27,16 +27,16 @@ const GalleryImage = ({ id, data, removePhotoMethod }) => {
     Alert.alert('Are you sure?', 'Do you want to delete this Image?', [
       {
         text: 'OK',
-        onPress: () => {
-          deletePhotoAPI(id)
-            .then((res) => {
-              removePhotoMethod(id);
-              console.log(`successful deleted image`);
-            })
-            .catch((err) => {
-              console.log(`Something went wrong in the Gallery image: ${err.message}`);
-            });
-          setShowEdit(false);
+        onPress: async () => {
+          try {
+            deletePhotoAPI(id);
+            removePhotoMethod(id);
+            console.log(`successful deleted image`);
+            setShowEdit(false);
+          } catch (err) {
+            console.log(`Something went wrong in the Gallery image: ${err.message}`);
+            setShowEdit(false);
+          }
         },
       },
       { text: 'Cancel', onPress: () => setShowEdit(false), style: 'cancel' },
